@@ -1,0 +1,217 @@
+{
+  "project_info": {
+    "project_number": "374168288805",
+    "firebase_url": "https://tradegames-2dff6.firebaseio.com",
+    "project_id": "tradegames-2dff6",
+    "storage_bucket": "tradegames-2dff6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374168288805:android:16e952131438f9a64249cc",
+        "android_client_info": {
+          "package_name": "br.com.hagiosdev.tudo_no_tabuleiro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374168288805-a15cgfg1nburqd7ubo62k6ou9j49g5pr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro",
+            "certificate_hash": "29fcfb3e0131f700d3d65ede779f7ddf8195cac2"
+          }
+        },
+        {
+          "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaG7jGT_PizWJsMFM0PiMF8bFF_MPeJyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374168288805:android:1303b3606233c8184249cc",
+        "android_client_info": {
+          "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374168288805-rbcj6ed31u6oeq6a0qcvhpm5egk11i8k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
+            "certificate_hash": "29fcfb3e0131f700d3d65ede779f7ddf8195cac2"
+          }
+        },
+        {
+          "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaG7jGT_PizWJsMFM0PiMF8bFF_MPeJyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374168288805:android:4cc4ef55270c2ba5",
+        "android_client_info": {
+          "package_name": "com.example.tudoemmurici"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaG7jGT_PizWJsMFM0PiMF8bFF_MPeJyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374168288805:android:3b42689370daa4d9",
+        "android_client_info": {
+          "package_name": "com.hagios.admintudoemmurici"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaG7jGT_PizWJsMFM0PiMF8bFF_MPeJyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374168288805:android:cc356441cbbb1969",
+        "android_client_info": {
+          "package_name": "com.hagios.tudo_no_cleto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374168288805-esjg3mvvlqpj5g6kud91ieenmun81fhg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hagios.tudo_no_cleto",
+            "certificate_hash": "717e96b73581ae8cf138c9f56d34146da779b15c"
+          }
+        },
+        {
+          "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaG7jGT_PizWJsMFM0PiMF8bFF_MPeJyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374168288805:android:a9418979a7e8429d",
+        "android_client_info": {
+          "package_name": "com.hagios.tudoemmurici"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374168288805-fn4b50fi76shs5kut532l9rduonk2vle.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hagios.tudoemmurici",
+            "certificate_hash": "717e96b73581ae8cf138c9f56d34146da779b15c"
+          }
+        },
+        {
+          "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaG7jGT_PizWJsMFM0PiMF8bFF_MPeJyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374168288805-bmcb6qddd8a41q2uo4f0hk3t037aot9b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
