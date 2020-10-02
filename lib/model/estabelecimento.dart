@@ -107,7 +107,7 @@ class Estabelecimento {
       nomeResponsavel: data['nomeResponsavel'],
       telefonePrimario: data['telefonePrimario'],
       telefoneSecundario: data['telefoneSecundario'],
-      telefonePrimarioWhatsapp: data['telefonePrimarioWhatsapp'],
+      telefonePrimarioWhatsapp: data['telefonePrimarioWhatsapp'] ?? false,
       telefoneResponsavel: data['telefoneResponsavel'],
       tags: tagsAux ?? [],
       uidUser: data['uidUser'],

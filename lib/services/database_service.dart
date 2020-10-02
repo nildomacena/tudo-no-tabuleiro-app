@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
@@ -16,6 +18,13 @@ class DatabaseService {
 
   final String nophoto =
       'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921';
+
+  int get randomNumber {
+    var rng = new Random();
+    for (var i = 0; i < 1000; i++) {
+      return rng.nextInt(10000);
+    }
+  }
 
   Future<void> checkUserBDInfo(User user) async {
     QuerySnapshot snapshot = await _firestore
@@ -132,6 +141,7 @@ class DatabaseService {
     QuerySnapshot querySnapshot = await _firestore
         .collection('estabelecimentos')
         .where('ativo', isEqualTo: true)
+        .orderBy('plano', descending: true)
         .get();
     //Estabelecimento.fromFirestore(snapshot, produtos)
     querySnapshot.docs.forEach((estabSnap) async {

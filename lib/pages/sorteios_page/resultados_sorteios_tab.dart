@@ -64,6 +64,16 @@ class ResultadosSorteiosTab extends StatelessWidget {
                           width: 32,
                           color: Colors.black,
                         );
+                      if (snapshot.data.length == 0)
+                        return Container(
+                          padding: EdgeInsets.all(15),
+                          child: Text(
+                            'Ainda não há resultados para os sorteios, mas aguarde novidades em breve!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 23, fontWeight: FontWeight.w400),
+                          ),
+                        );
                       else
                         return Container(
                           child: Column(

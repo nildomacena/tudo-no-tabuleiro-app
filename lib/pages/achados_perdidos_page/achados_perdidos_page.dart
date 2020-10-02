@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
+import 'package:tudo_no_tabuleiro_app/pages/visualizar_imagem_page/visualizar_imagem_page.dart';
 
 class AchadosPerdidosPage extends StatelessWidget {
   final List<Achado> achados;
@@ -54,7 +55,7 @@ class AchadosPerdidosPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Empregos - Vagas e Currículos'),
+        title: Text('Achados e Perdidos'),
       ),
       body: achados.length == 0
           ? Column(
@@ -63,7 +64,7 @@ class AchadosPerdidosPage extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(10),
                   child: Text(
-                    'Por enquanto não há ofertas de emprego. Mas continue acompanhando o app, uma vaga pode surgir a qualquer momento.\nEnquanto isso, você pode entrar em contato e nos enviar seu currículo. Nós encaminharemos às empresas parceiras',
+                    'Por enquanto não há objetos cadastrados no achados e perdidos. Se você encontrou ou perdeu alguma coisa, entre em contato pelo WhatsApp. Nós publicaremos aqui.',
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                         fontSize: 18,
@@ -80,23 +81,46 @@ class AchadosPerdidosPage extends StatelessWidget {
                     if (index == 0) return cardContato;
 
                     Achado achado = achados[index - 1];
-                    return Card(
-                      child: Container(
-                        height: 150,
-                        width: Get.width,
-                        margin: EdgeInsets.only(left: 10, right: 10),
-                        child: Column(
-                          children: [
-                            if (achado.imagem != null && achado.imagem != "")
-                              Image.network(achado.imagem),
-                            Container(
-                              child: Text(achado.descricao),
-                            ),
-                            Container(
-                              child: Text(
-                                  'Achado por: ${achado.achadoPor}\nContato: ${achado.contato}'),
-                            )
-                          ],
+                    return Container(
+                      margin: EdgeInsets.only(left: 10, right: 10, bottom: 20),
+                      child: Card(
+                        child: Container(
+                          height: 180,
+                          width: Get.width,
+                          //margin: EdgeInsets.only(left: 10, right: 10),
+                          child: Column(
+                            children: [
+                              if (achado.imagem != null && achado.imagem != "")
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(VisualizarImagemPage(achado.imagem));
+                                  },
+                                  child: Container(
+                                    height: 115,
+                                    width: double.infinity,
+                                    margin: EdgeInsets.only(bottom: 15),
+                                    child: Image.network(
+                                      achado.imagem,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              Container(
+                                child: Text(
+                                  achado.descricao,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              Container(
+                                child: Text('Achado por: ${achado.achadoPor}',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400)),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );

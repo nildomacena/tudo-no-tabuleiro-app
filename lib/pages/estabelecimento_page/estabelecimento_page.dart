@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
@@ -6,6 +7,7 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/carossel_imagens.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/listview_itens.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EstabelecimentoPage extends StatefulWidget {
   final Estabelecimento estabelecimento;
@@ -46,12 +48,22 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
       body: ListView(
         children: [
           Container(
-            width: double.infinity,
-            height: 200,
-            color: Colors.grey[300],
-            child: Image.network(widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
-                fit: BoxFit.cover),
-          ),
+              width: double.infinity,
+              height: 200,
+              color: Colors.grey[300],
+              child: Hero(
+                tag: widget.estabelecimento.imagemUrl ??
+                    databaseService.randomNumber.toString(),
+                child: ExtendedImage.network(
+                  widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
+                  fit: BoxFit.cover,
+                  cache: true,
+                ),
+              )
+              /* Image.network(
+                widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
+                fit: BoxFit.cover), */
+              ),
           ContainerInfoGerais(widget.estabelecimento),
           if (widget.estabelecimento.produtos != null &&
               widget.estabelecimento.produtos.length > 0)
@@ -115,25 +127,6 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                     if (widget.estabelecimento.produtos != null &&
                         widget.estabelecimento.produtos.length > 0)
                       ListViewItens(widget.estabelecimento.produtos),
-                    /* Container(
-                          height: 500,
-                          width: double.infinity,
-                          color: Colors.green,
-                          margin: EdgeInsets.all(20),
-                        ),
-                        Container(
-                          height: 500,
-                          width: double.infinity,
-                          color: Colors.blue,
-                          margin: EdgeInsets.all(20),
-                        ),
-                        Container(
-                          height: 500,
-                          width: double.infinity,
-                          color: Colors.blue,
-                          margin: EdgeInsets.all(20),
-                          key: dataKey,
-                        ), */
                   ],
                 )),
             Positioned(
@@ -147,36 +140,11 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                   child: AppBar(
                     title: Text(widget.estabelecimento.nome),
                     backgroundColor: Colors.grey,
-                  ) /* Material(
-                  elevation: 4,
-                  child: Column(
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                              padding: EdgeInsets.only(left: 5),
-                              width: Get.width,
-                              alignment: Alignment.centerLeft,
-                              //color: Colors.blue,
-                              child: Text(
-                                widget.estabelecimento.nome,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w600),
-                              ))),
-                      Expanded(flex: 1, child: Container())
-                    ],
-                  ),
-                ), */
-                  ),
+                  )),
             ),
           ],
         )),
       ),
-      /* bottomNavigationBar: new RaisedButton(
-        onPressed: () => Scrollable.ensureVisible(dataKey.currentContext,
-            duration: Duration(milliseconds: 500)),
-        child: new Text("Scroll to data"),
-      ), */
     );
   }
 }
@@ -199,12 +167,19 @@ class ContainerInfoGerais extends StatelessWidget {
           ),
           Container(
             margin: EdgeInsets.only(top: 5),
-            child: Text('Lanchonete e hamburgueria'),
+            child: Text(estabelecimento.categoria.nome ?? ''),
           ),
           Container(
             margin: EdgeInsets.only(top: 5, bottom: 5),
-            child: Text('Preço de Entrega: R\$5,00'),
+            child: AutoSizeText(estabelecimento.descricao ?? ''),
           ),
+          if (estabelecimento.horarioFuncionamento != null &&
+              estabelecimento.horarioFuncionamento != '')
+            Container(
+              margin: EdgeInsets.only(top: 5, bottom: 5),
+              child: Text(
+                  'Horário de funcionamento: ${estabelecimento.horarioFuncionamento}'),
+            ),
           Divider(
             thickness: 1.5,
           ),
@@ -234,7 +209,7 @@ class ContainerInfoGerais extends StatelessWidget {
                         Expanded(
                             child: Container(
                           child: AutoSizeText(
-                            estabelecimento.endereco,
+                            estabelecimento.endereco ?? '',
                             maxLines: 2,
                           ),
                         )),
@@ -261,6 +236,7 @@ class ContainerInfoGerais extends StatelessWidget {
                     ),
                   ),
                 ),
+                if(estabelecimento.telefonePrimario != null && estabelecimento.telefonePrimario != '')
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -269,16 +245,30 @@ class ContainerInfoGerais extends StatelessWidget {
                         Icons.phone,
                         color: Colors.grey,
                       ),
-                      Expanded(child: Text('99999-8877')),
+                      Expanded(child: Text(estabelecimento.telefonePrimario)),
                       Expanded(
                         child: Container(),
                       ),
                       Container(
                           width: 137,
                           child: FlatButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                if (estabelecimento.telefonePrimarioWhatsapp ==
+                                        null ||
+                                    estabelecimento.telefonePrimario == null)
+                                  return;
+                                String link = estabelecimento
+                                        .telefonePrimarioWhatsapp
+                                    ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
+                                    : "tel://${estabelecimento.telefonePrimario}";
+                                if (await canLaunch(link)) {
+                                  launch(link);
+                                }
+                              },
                               child: AutoSizeText(
-                                estabelecimento.telefonePrimarioWhatsapp
+                                estabelecimento.telefonePrimarioWhatsapp !=
+                                            null &&
+                                        estabelecimento.telefonePrimarioWhatsapp
                                     ? 'WHATSAPP'
                                     : 'LIGAR',
                                 maxLines: 1,

@@ -17,7 +17,7 @@ class EmpregosPage extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Quer enviar seu currículo ou divulgar uma vaga de emprego?\nNos envie uma mensagem via WhatsApp com suas informações e eles serão divulgadas aqui no aplicativo.',
+                    'Quer enviar seu currículo ou divulgar uma vaga de emprego?\nNos envie uma mensagem via WhatsApp com suas informações e elas serão divulgadas aqui no aplicativo.',
                     style: TextStyle(
                       fontSize: 18,
                       wordSpacing: 1,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pinch_zoom_image_last/pinch_zoom_image_last.dart';
 
 class VisualizarImagemPage extends StatelessWidget {
@@ -9,9 +10,13 @@ class VisualizarImagemPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: PinchZoomImage(
-        image: Image.network(urlImagem),
-
+          child: Container(
+        alignment: Alignment.center,
+        height: Get.height,
+        width: Get.width,
+        child: PinchZoomImage(
+          image: Image.network(urlImagem),
+        ),
       )),
     );
   }

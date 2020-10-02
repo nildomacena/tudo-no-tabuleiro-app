@@ -71,7 +71,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
           TextField(
             decoration: InputDecoration(
                 border: InputBorder.none,
-                hintText: 'Pesquisa uma categoria',
+                hintText: 'Pesquise uma categoria ou estabelecimento',
                 icon: Icon(Icons.search)),
             controller: searchController,
             onChanged: (txt) {
@@ -109,7 +109,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
               return Material(
                 elevation: 5,
                 child: Container(
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
+                  //margin: EdgeInsets.only(top: 5, bottom: 5),
                   height: 150,
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -147,7 +147,7 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                         },
                         child: Container(
                             alignment: Alignment.center,
-                            padding: EdgeInsets.only(left: 5, right: 5),
+                            padding: EdgeInsets.only(left: 10, right: 10),
                             child: Text(
                               categoria.nome,
                               textAlign: TextAlign.center,
@@ -188,7 +188,53 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                 itemBuilder: (BuildContext context, int index) {
                   Estabelecimento estabelecimento =
                       estabelecimentosFiltrados[index];
-
+                  return InkWell(
+                    onTap: () {
+                      Get.to(EstabelecimentoPage(estabelecimento));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10, bottom: 10),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              top: BorderSide(color: Colors.grey, width: 1),
+                              bottom:
+                                  BorderSide(color: Colors.grey, width: 1))),
+                      height: 80,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 80,
+                            width: 80,
+                            child: Image.network(estabelecimento.imagemUrl,
+                                fit: BoxFit.cover),
+                          ),
+                          Expanded(
+                            child: Container(
+                              //margin: EdgeInsets.only(top:5),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    estabelecimento.nome ?? '',
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Text(
+                                    'Categoria: ${estabelecimento.categoria.nome}',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
                   return ListTile(
                     title: Text(estabelecimento.nome ?? ''),
                     subtitle:

@@ -43,7 +43,7 @@ class EstabelecimentoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
-      height: 300,
+      height: 200,
       width: Get.width,
       child: Card(
         color: Colors.grey[200],
@@ -58,19 +58,24 @@ class EstabelecimentoCard extends StatelessWidget {
                   flex: 5,
                   child: Container(
                     width: double.infinity,
-                    child: ExtendedImage.network(
-                        estabelecimento.imagemUrl ??
-                            'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921',
-                        fit: BoxFit.cover),
+                    child: Hero(
+                      tag: estabelecimento.imagemUrl ??
+                          databaseService.randomNumber.toString(),
+                      child: ExtendedImage.network(
+                          estabelecimento.imagemUrl ??
+                              'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921',
+                          fit: BoxFit.cover),
+                    ),
                   )),
               Divider(),
               Container(
                 margin: EdgeInsets.only(left: 10),
-                child:
-                    Text(estabelecimento.nome, style: TextStyle(fontSize: 23)),
+                child: Text(estabelecimento.nome,
+                    style:
+                        TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 20, left: 10),
+                margin: EdgeInsets.only(bottom: 15, left: 10),
                 child: Text(estabelecimento.endereco ?? '',
                     style: TextStyle(fontSize: 15)),
               ),

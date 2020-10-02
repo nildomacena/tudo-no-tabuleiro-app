@@ -20,6 +20,7 @@ class _HomePageState extends State<HomePage> {
     InicioPage(),
     PesquisaPage(),
     SorteiosPage(),
+    /* SorteiosPage(), */
   ];
 
   @override
@@ -49,8 +50,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: _tabs[selectedIndex],
+      body: WillPopScope(
+        onWillPop: () {
+          if (selectedIndex != 0) {
+            setState(() {
+              selectedIndex = 0;
+            });
+            return Future.value(false);
+          } else
+            return Future.value(true);
+        },
+        child: Container(
+          child: _tabs[selectedIndex],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey,
@@ -63,6 +75,8 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(FontAwesome.search), title: Text('Buscar')),
           BottomNavigationBarItem(
               icon: Icon(FontAwesome.gift), title: Text('Sorteios')),
+          /* BottomNavigationBarItem(
+              icon: Icon(FontAwesome5.handshake), title: Text('Social')), */
         ],
         currentIndex: selectedIndex,
         selectedItemColor: Colors.amber[800],

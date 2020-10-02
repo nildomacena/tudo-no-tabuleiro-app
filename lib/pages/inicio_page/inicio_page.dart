@@ -46,7 +46,7 @@ class DestaquesCarousel extends StatelessWidget {
       elevation: 5,
       child: InkWell(
         child: Ink.image(
-          image: AssetImage('assets/images/emprego.jpg'),
+          image: AssetImage('assets/images/emprego.png'),
           fit: BoxFit.cover,
         ),
         onTap: () async {
@@ -122,7 +122,7 @@ class DestaquesCarousel extends StatelessWidget {
       elevation: 5,
       child: InkWell(
         child: Ink.image(
-          image: AssetImage('assets/images/achados-perdidos.jpg'),
+          image: AssetImage('assets/images/achados-perdidos.png'),
           fit: BoxFit.cover,
         ),
         onTap: () async {
@@ -200,7 +200,7 @@ class DestaquesCarousel extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
+                  ExtendedImage.network(
                     e.imagemUrl,
                     fit: BoxFit.fill,
                   ),
@@ -266,10 +266,7 @@ class DestaquesCarousel extends StatelessWidget {
   }
 }
 
-/*
-LIST CATEGORIA COM CARDS HORIZONTAIS
-
- class ListCategoria extends StatelessWidget {
+/* class ListCategoria extends StatelessWidget {
   Map categoriaEstabelecimentos;
   ListCategoria() {
     categoriaEstabelecimentos =
@@ -354,7 +351,7 @@ class ListCategoria extends StatelessWidget {
                 categoriaEstabelecimentos.keys.toList()[index]];
             return Container(
               margin: EdgeInsets.only(top: 20),
-              height: 220,
+              height: 170,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -369,15 +366,21 @@ class ListCategoria extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(mapCategoria['categoria'].nome,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500)),
+                          Expanded(
+                            child: Text(mapCategoria['categoria'].nome,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500)),
+                          ),
                           Container(
                               padding: EdgeInsets.only(bottom: 2, left: 2),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                size: 16,
+                              margin: EdgeInsets.only(right: 15),
+                              child: Text(
+                                'Ver mais',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.blue,
+                                    fontSize: 18),
                               ))
                         ],
                       ),
@@ -391,6 +394,7 @@ class ListCategoria extends StatelessWidget {
                           .toList(),
                     ),
                   ),
+                  Divider()
                 ],
               ),
             );
@@ -399,6 +403,55 @@ class ListCategoria extends StatelessWidget {
   }
 }
 
+class EstabelecimentoCard extends StatelessWidget {
+  final Estabelecimento estabelecimento;
+  EstabelecimentoCard(this.estabelecimento);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 100,
+        width: 100,
+        margin: EdgeInsets.only(right: 10),
+        child: InkWell(
+          onTap: () {
+            Get.to(EstabelecimentoPage(estabelecimento));
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 70,
+                width: 70,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Hero(
+                    tag: estabelecimento.imagemUrl ??
+                        databaseService.randomNumber.toString(),
+                    child: ExtendedImage.network(
+                      estabelecimento.imagemUrl ?? databaseService.nophoto,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Text(estabelecimento.nome,
+                    maxLines: 2,
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    )),
+              )
+            ],
+          ),
+        ));
+  }
+}
+/* 
+ESTABELECIMENTO CARD HORIZONTAL ANTIGO
 class EstabelecimentoCard extends StatelessWidget {
   final Estabelecimento estabelecimento;
   EstabelecimentoCard(this.estabelecimento);
@@ -450,3 +503,4 @@ class EstabelecimentoCard extends StatelessWidget {
     );
   }
 }
+ */

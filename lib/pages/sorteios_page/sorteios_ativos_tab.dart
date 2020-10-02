@@ -77,8 +77,7 @@ class _SorteiosAtivosTabState extends State<SorteiosAtivosTab> {
                             "No momento não há nenhum sorteio ativo. Mas fique atento, em breve novidades!!",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 21,
-                            ),
+                                fontSize: 23, fontWeight: FontWeight.w400),
                           ),
                         );
                       return Container(
