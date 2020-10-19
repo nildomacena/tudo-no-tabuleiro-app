@@ -201,7 +201,7 @@ class DestaquesCarousel extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   ExtendedImage.network(
-                    e.imagemUrl,
+                    e.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.fill,
                   ),
                   Positioned.fill(
@@ -367,7 +367,8 @@ class ListCategoria extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
-                            child: Text(mapCategoria['categoria'].nome,
+                            child: AutoSizeText(mapCategoria['categoria'].nome,
+                                maxLines: 1,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w500)),
@@ -411,7 +412,7 @@ class EstabelecimentoCard extends StatelessWidget {
     return Container(
         height: 100,
         width: 100,
-        margin: EdgeInsets.only(right: 10),
+        margin: EdgeInsets.only(right: 20),
         child: InkWell(
           onTap: () {
             Get.to(EstabelecimentoPage(estabelecimento));
@@ -451,6 +452,42 @@ class EstabelecimentoCard extends StatelessWidget {
   }
 }
 /* 
+
+AVATAR ANTIGO
+
+Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 70,
+                width: 70,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Hero(
+                    tag: estabelecimento.imagemUrl ??
+                        databaseService.randomNumber.toString(),
+                    child: ExtendedImage.network(
+                      estabelecimento.imagemUrl ?? databaseService.nophoto,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Text(estabelecimento.nome,
+                    maxLines: 2,
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    )),
+              )
+            ],
+          ),
+
+
 ESTABELECIMENTO CARD HORIZONTAL ANTIGO
 class EstabelecimentoCard extends StatelessWidget {
   final Estabelecimento estabelecimento;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
+import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
+import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pesquisa_page/pesquisa_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/sorteios_page/sorteios_page.dart';
@@ -9,7 +11,11 @@ import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 class HomePage extends StatefulWidget {
   bool itemAdicionado;
   int selectedTab;
-  HomePage({this.itemAdicionado, this.selectedTab});
+  String estabelecimentoIdNotificacao;
+  HomePage(
+      {this.itemAdicionado,
+      this.selectedTab,
+      this.estabelecimentoIdNotificacao});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -25,10 +31,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    if (widget.selectedTab != null)
+    if (widget.selectedTab != null && widget.selectedTab != 0) {
+      print('widget.selectedTab != null');
       setState(() {
         selectedIndex = widget.selectedTab;
       });
+    }
     if (widget.itemAdicionado != null && widget.itemAdicionado) {
       Future.delayed(Duration(milliseconds: 500)).then((value) => Get.snackbar(
           'Item Adicionado ao carrinho',
@@ -43,6 +51,15 @@ class _HomePageState extends State<HomePage> {
               )),
           snackPosition: SnackPosition.BOTTOM,
           margin: EdgeInsets.only(bottom: 30, left: 10, right: 10)));
+    }
+    if (widget.estabelecimentoIdNotificacao != null &&
+        widget.estabelecimentoIdNotificacao != '') {
+      print(
+          'Veio de uma notificação de estabelecimento ${widget.estabelecimentoIdNotificacao}');
+      Estabelecimento estabelecimento = databaseService
+          .estabelecimentoById(widget.estabelecimentoIdNotificacao);
+      Future.delayed(Duration(seconds: 1))
+          .then((value) => Get.to(EstabelecimentoPage(estabelecimento)));
     }
     super.initState();
   }
@@ -69,12 +86,12 @@ class _HomePageState extends State<HomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(FontAwesome5Solid.home),
-            title: Text('Início'),
+            label: 'Início',
           ),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesome.search), title: Text('Buscar')),
+              icon: Icon(FontAwesome.search), label: 'Buscar'),
           BottomNavigationBarItem(
-              icon: Icon(FontAwesome.gift), title: Text('Sorteios')),
+              icon: Icon(FontAwesome.gift), label: 'Sorteios'),
           /* BottomNavigationBarItem(
               icon: Icon(FontAwesome5.handshake), title: Text('Social')), */
         ],

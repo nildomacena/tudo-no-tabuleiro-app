@@ -5,7 +5,7 @@ class Produto {
   final String nome;
   final String descricao;
   final String imagem;
-  final double preco;
+  final dynamic preco;
 
   Produto({this.id, this.nome, this.descricao, this.imagem, this.preco});
 
@@ -15,7 +15,7 @@ class Produto {
         id: snapshot.id,
         descricao: data['descricao'],
         nome: data['nome'],
-        preco: data['preco'].toDouble() ?? 0,
+        preco: data['preco'],
         imagem: data['imagem']);
   }
 }

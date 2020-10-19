@@ -54,7 +54,7 @@ class TileProduto extends StatelessWidget {
                       ),
                       Container(
                           margin: EdgeInsets.only(top: 5),
-                          child: Text("R\$${produto.preco.toStringAsFixed(2)}",
+                          child: Text("R\$${produto.preco}",
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.w300))),
                     ],

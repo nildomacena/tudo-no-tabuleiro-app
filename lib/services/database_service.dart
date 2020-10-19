@@ -21,8 +21,8 @@ class DatabaseService {
 
   int get randomNumber {
     var rng = new Random();
-    for (var i = 0; i < 1000; i++) {
-      return rng.nextInt(10000);
+    for (var i = 0; i < 10; i++) {
+      return rng.nextInt(100);
     }
   }
 
@@ -135,6 +135,20 @@ class DatabaseService {
     return estabelecimentosFinal.length > 0;
   }
 
+
+  Estabelecimento estabelecimentoById(String id){
+    return estabelecimentosFinal.where((e) => e.id == id).toList()[0];
+  }
+
+  Future<Estabelecimento> getEstabelecimentoById(String id) async {
+
+    DocumentSnapshot estabelecimentoSnapshot =
+        await _firestore.doc('estabelecimentos/$id').get();
+
+    return Estabelecimento.fromFirestore(estabelecimentoSnapshot,
+        await estabelecimentoSnapshot.reference.collection('produtos').get());
+  }
+
   Future<List<Estabelecimento>> getEstabelecimentos() async {
     List<Estabelecimento> estabelecimentos = [];
 
@@ -161,7 +175,9 @@ class DatabaseService {
   }
 
   List<Estabelecimento> getEstabelecimentosDestaque() {
-    return estabelecimentosFinal.where((estab) => estab.destaque).toList();
+    return estabelecimentosFinal
+        .where((estab) => estab.destaque && estab.imagemUrl != null)
+        .toList();
   }
 
   /**EMPREGOS E ACHADOS E PERDIDOS */
