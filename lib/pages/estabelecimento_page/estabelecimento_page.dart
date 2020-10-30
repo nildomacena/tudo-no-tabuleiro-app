@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -40,10 +41,14 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
 
   @override
   Widget build(BuildContext context) {
+    String cor = 'rgba(134,63,63,0.68)';
+    cor.substring(cor.indexOf('(') + 1, cor.length - 2).split(',');
+    print(
+        'print ${cor.substring(cor.indexOf('(') + 1, cor.length - 2).split(',')[0]}');
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: widget.estabelecimento.colorRGBA,
         title: Text(widget.estabelecimento.nome),
-        backgroundColor: Colors.grey,
       ),
       body: ListView(
         children: [
@@ -180,6 +185,35 @@ class ContainerInfoGerais extends StatelessWidget {
               child: Text(
                   'Horário de funcionamento: ${estabelecimento.horarioFuncionamento}'),
             ),
+          if (estabelecimento.possuiRedeSocial)
+            Container(
+              width: double.infinity,
+              height: 50,
+              child: Center(
+                  child: FlatButton(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    estabelecimento.nomeRedeSocial
+                            .toUpperCase()
+                            .contains('INSTAGRAM')
+                        ? Icon(AntDesign.instagram, color: Colors.pink[300])
+                        : Container(),
+                    Container(
+                        margin: EdgeInsets.only(left: 4),
+                        child: Text(
+                          estabelecimento.nomeRedeSocial.toUpperCase(),
+                          style: TextStyle(color: Colors.black),
+                        )),
+                  ],
+                ),
+                onPressed: () async {
+                  if (await canLaunch(estabelecimento.linkRedeSocial)) {
+                    launch(estabelecimento.linkRedeSocial);
+                  }
+                },
+              )),
+            ),
           Divider(
             thickness: 1.5,
           ),
@@ -197,85 +231,129 @@ class ContainerInfoGerais extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          color: Colors.grey,
-                        ),
-                        Expanded(
-                            child: Container(
-                          child: AutoSizeText(
-                            estabelecimento.endereco ?? '',
-                            maxLines: 2,
+                  child: InkWell(
+                    onTap: () async {
+                      final availableMaps = await MapLauncher.installedMaps;
+                      await availableMaps.first.showMarker(
+                          coords: Coords(estabelecimento.localizacao.lat,
+                              estabelecimento.localizacao.lng),
+                          title: estabelecimento.nome,
+                          zoom: 15);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(top: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            color: Colors.red,
                           ),
-                        )),
-                        Container(),
-                        if (estabelecimento.localizacao != null)
-                          Container(
-                              width: 137,
-                              child: FlatButton(
-                                  onPressed: () async {
-                                    final availableMaps =
-                                        await MapLauncher.installedMaps;
-                                    await availableMaps.first.showMarker(
-                                        coords: Coords(
-                                            estabelecimento.localizacao.lat,
-                                            estabelecimento.localizacao.lng),
-                                        title: estabelecimento.nome,
-                                        zoom: 15);
-                                  },
-                                  child: AutoSizeText(
-                                    'ABRIR NO MAPA',
-                                    maxLines: 1,
-                                  )))
-                      ],
+                          Expanded(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 4),
+                            child: AutoSizeText(
+                              estabelecimento.endereco ?? '',
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          )),
+                          Container(),
+                          /* if (estabelecimento.localizacao != null)
+                            Container(
+                                width: 137,
+                                child: FlatButton(
+                                    onPressed: () async {
+                                      final availableMaps =
+                                          await MapLauncher.installedMaps;
+                                      await availableMaps.first.showMarker(
+                                          coords: Coords(
+                                              estabelecimento.localizacao.lat,
+                                              estabelecimento.localizacao.lng),
+                                          title: estabelecimento.nome,
+                                          zoom: 15);
+                                    },
+                                    child: AutoSizeText(
+                                      'ABRIR NO MAPA',
+                                      maxLines: 1,
+                                    ))) */
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                if(estabelecimento.telefonePrimario != null && estabelecimento.telefonePrimario != '')
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.phone,
-                        color: Colors.grey,
+                if (estabelecimento.telefonePrimario != null &&
+                    estabelecimento.telefonePrimario != '')
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
+                        if (estabelecimento.telefonePrimarioWhatsapp == null ||
+                            estabelecimento.telefonePrimario == null) return;
+                        String link = estabelecimento.telefonePrimarioWhatsapp
+                            ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
+                            : "tel://${estabelecimento.telefonePrimario}";
+                        if (await canLaunch(link)) {
+                          launch(link);
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            estabelecimento.telefonePrimarioWhatsapp
+                                ? FlutterIcons.logo_whatsapp_ion
+                                : Icons.phone,
+                            color: estabelecimento.telefonePrimarioWhatsapp
+                                ? Colors.green
+                                : Colors.grey,
+                          ),
+                          Expanded(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 4),
+                            child: Text(
+                              estabelecimento.telefonePrimario.substring(2),
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 17,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          )),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          /* Container(
+                              width: 137,
+                              child: FlatButton(
+                                  onPressed: () async {
+                                    if (estabelecimento
+                                                .telefonePrimarioWhatsapp ==
+                                            null ||
+                                        estabelecimento.telefonePrimario ==
+                                            null) return;
+                                    String link = estabelecimento
+                                            .telefonePrimarioWhatsapp
+                                        ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
+                                        : "tel://${estabelecimento.telefonePrimario}";
+                                    if (await canLaunch(link)) {
+                                      launch(link);
+                                    }
+                                  },
+                                  child: AutoSizeText(
+                                    estabelecimento.telefonePrimarioWhatsapp !=
+                                                null &&
+                                            estabelecimento
+                                                .telefonePrimarioWhatsapp
+                                        ? 'WHATSAPP'
+                                        : 'LIGAR',
+                                    maxLines: 1,
+                                  ))) */
+                        ],
                       ),
-                      Expanded(child: Text(estabelecimento.telefonePrimario)),
-                      Expanded(
-                        child: Container(),
-                      ),
-                      Container(
-                          width: 137,
-                          child: FlatButton(
-                              onPressed: () async {
-                                if (estabelecimento.telefonePrimarioWhatsapp ==
-                                        null ||
-                                    estabelecimento.telefonePrimario == null)
-                                  return;
-                                String link = estabelecimento
-                                        .telefonePrimarioWhatsapp
-                                    ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
-                                    : "tel://${estabelecimento.telefonePrimario}";
-                                if (await canLaunch(link)) {
-                                  launch(link);
-                                }
-                              },
-                              child: AutoSizeText(
-                                estabelecimento.telefonePrimarioWhatsapp !=
-                                            null &&
-                                        estabelecimento.telefonePrimarioWhatsapp
-                                    ? 'WHATSAPP'
-                                    : 'LIGAR',
-                                maxLines: 1,
-                              )))
-                    ],
-                  ),
-                )
+                    ),
+                  )
               ],
             ),
           ),

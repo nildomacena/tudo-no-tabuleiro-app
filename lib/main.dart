@@ -138,18 +138,20 @@ class MyApp extends StatelessWidget {
               );
             }
             return Container(
-              child: Stack(
-                children: [
-                  Image.asset('assets/icon/splashscreen.png',
-                      fit: BoxFit.cover),
-                  Center(
+                child: Stack(
+              children: [
+                Image.asset('assets/icon/splashscreen.png', fit: BoxFit.cover),
+                Positioned(
+                  bottom: 240,
+                  left: Get.width * .43,
+                  child: Center(
                     child: CircularProgressIndicator(
                       backgroundColor: Colors.white,
                     ),
                   ),
-                ],
-              ),
-            );
+                ),
+              ],
+            ));
           }),
     );
   }
@@ -177,19 +179,26 @@ class FutureGetEstabelecimentos extends StatelessWidget {
               estabelecimentoIdNotificacao: estabelecimentoIdNotificacao,
             );
           }
-          return Stack(
-            children: [
-              Image.asset('assets/icon/splashscreen.png', fit: BoxFit.cover),
-              Positioned(
-                bottom: 140,
-                left: Get.width * .43,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    backgroundColor: Colors.white,
+          return Container(
+            color: Colors.green,
+            height: Get.height,
+            width: Get.width,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Container(
+                  child: Image.asset('assets/icon/splashscreen.png', fit: BoxFit.cover)),
+                Positioned(
+                  bottom: 240,
+                  left: Get.width * .45,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         });
   }

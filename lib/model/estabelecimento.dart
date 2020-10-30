@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
 import 'package:tudo_no_tabuleiro_app/model/localizacao.dart';
 import 'package:tudo_no_tabuleiro_app/model/produto.dart';
@@ -24,9 +27,13 @@ class Estabelecimento {
   final String imagem2;
   final Plano plano;
   final Localizacao localizacao;
+  final String linkRedeSocial;
+  final String nomeRedeSocial;
+  String cor;
   List<Produto> produtos;
   final bool destaque;
   List<String> tags;
+
   Estabelecimento(
       {this.nome,
       this.imagemUrl,
@@ -48,7 +55,10 @@ class Estabelecimento {
       this.telefoneSecundario,
       this.uidUser,
       this.localizacao,
-      this.tags}) {
+      this.tags,
+      this.linkRedeSocial,
+      this.nomeRedeSocial,
+      this.cor}) {
     if (tags == null) tags = [];
   }
 
@@ -66,6 +76,24 @@ class Estabelecimento {
         categoria.nome.toLowerCase().contains(str);
   }
 
+  bool get possuiRedeSocial {
+    return nomeRedeSocial != null &&
+        linkRedeSocial != null &&
+        nomeRedeSocial.length > 0 &&
+        linkRedeSocial.length > 0;
+  }
+
+  Color get colorRGBA {
+    if (cor == null || cor.length <= 0) return Get.theme.primaryColor;
+    List<String> listRGBO =
+        cor.substring(cor.indexOf('(') + 1, cor.length - 2).split(',');
+
+    return Color.fromRGBO(int.parse(listRGBO[0]), int.parse(listRGBO[1]),
+        int.parse(listRGBO[2]), double.parse(listRGBO[3] ?? 1));
+    //Color.fromRGBO(r, g, b, opacity)
+    return Colors.blue;
+  }
+
   factory Estabelecimento.fromFirestore(
       DocumentSnapshot snapshot, QuerySnapshot snapshotProdutos) {
     List<Produto> produtos = [];
@@ -77,7 +105,9 @@ class Estabelecimento {
         Categoria(id: data['categoriaId'], nome: data['categoriaNome']);
     Plano plano = data['plano'] == 'basico'
         ? Plano.basico
-        : data['plano'] == 'inter' ? Plano.inter : Plano.top;
+        : data['plano'] == 'inter'
+            ? Plano.inter
+            : Plano.top;
     if (snapshotProdutos != null && snapshotProdutos.docs.length > 0)
       produtos = snapshotProdutos.docs
           .map((snapProduto) => Produto.fromFirestore(snapProduto))
@@ -111,6 +141,9 @@ class Estabelecimento {
       telefoneResponsavel: data['telefoneResponsavel'],
       tags: tagsAux ?? [],
       uidUser: data['uidUser'],
+      nomeRedeSocial: data['nomeRedeSocial'] ?? '',
+      linkRedeSocial: data['linkRedeSocial'] ?? '',
+      cor: data['cor'],
     );
   }
 }

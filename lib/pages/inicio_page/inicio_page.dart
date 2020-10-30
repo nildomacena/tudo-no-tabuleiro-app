@@ -47,7 +47,7 @@ class DestaquesCarousel extends StatelessWidget {
       child: InkWell(
         child: Ink.image(
           image: AssetImage('assets/images/emprego.png'),
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
         ),
         onTap: () async {
           Get.dialog(
@@ -412,7 +412,7 @@ class EstabelecimentoCard extends StatelessWidget {
     return Container(
         height: 100,
         width: 100,
-        margin: EdgeInsets.only(right: 20),
+        //margin: EdgeInsets.only(right: 5),
         child: InkWell(
           onTap: () {
             Get.to(EstabelecimentoPage(estabelecimento));
@@ -421,8 +421,8 @@ class EstabelecimentoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                height: 70,
-                width: 70,
+                height: 72,
+                width: 72,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: Hero(
