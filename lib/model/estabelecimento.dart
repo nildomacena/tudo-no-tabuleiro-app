@@ -86,10 +86,14 @@ class Estabelecimento {
   Color get colorRGBA {
     if (cor == null || cor.length <= 0) return Get.theme.primaryColor;
     List<String> listRGBO =
-        cor.substring(cor.indexOf('(') + 1, cor.length - 2).split(',');
-
-    return Color.fromRGBO(int.parse(listRGBO[0]), int.parse(listRGBO[1]),
-        int.parse(listRGBO[2]), double.parse(listRGBO[3] ?? 1));
+        cor.substring(cor.indexOf('(') + 1, cor.indexOf(')')).split(',');
+    print('$cor -  $listRGBO');
+    if (listRGBO.length == 4)
+      return Color.fromRGBO(int.parse(listRGBO[0]), int.parse(listRGBO[1]),
+          int.parse(listRGBO[2]), double.parse(listRGBO[3] ?? 1));
+    else
+      return Color.fromRGBO(int.parse(listRGBO[0]), int.parse(listRGBO[1]),
+          int.parse(listRGBO[2]), 1);
     //Color.fromRGBO(r, g, b, opacity)
     return Colors.blue;
   }

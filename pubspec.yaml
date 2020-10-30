@@ -46,6 +46,7 @@ dependencies:
   awesome_notifications: ^0.0.2+2
   flutter_launcher_icons: ^0.8.1
   flutter_image_compress: ^0.7.0
+  supercharged: ^1.11.0
 
 
 dev_dependencies:
