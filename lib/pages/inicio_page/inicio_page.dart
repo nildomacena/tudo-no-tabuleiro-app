@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/controllers/auth_controller.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
@@ -11,10 +14,12 @@ import 'package:tudo_no_tabuleiro_app/model/oferta_emprego.dart';
 import 'package:tudo_no_tabuleiro_app/pages/achados_perdidos_page/achados_perdidos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/empregos_page/empregos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
+import 'package:tudo_no_tabuleiro_app/pages/inicio_page/categorias_destaque.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pre_cadastro_page/pre_cadastro_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 
 class InicioPage extends GetWidget<AuthController> {
   @override
@@ -24,6 +29,7 @@ class InicioPage extends GetWidget<AuthController> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(children: [
+            CategoriasDestaque(),
             DestaquesCarousel(),
             Divider(),
             ListCategoria(),
@@ -41,7 +47,7 @@ class DestaquesCarousel extends StatelessWidget {
   }
 
   Widget containerEmpregos = Container(
-    height: 170,
+    height: 130,
     width: Get.width,
     padding: EdgeInsets.only(left: 5, right: 5),
     child: Material(
@@ -117,7 +123,7 @@ class DestaquesCarousel extends StatelessWidget {
   );
 
   Widget containerAchados = Container(
-    height: 170,
+    height: 130,
     width: Get.width,
     padding: EdgeInsets.only(left: 5, right: 5),
     child: Material(
@@ -125,7 +131,7 @@ class DestaquesCarousel extends StatelessWidget {
       child: InkWell(
         child: Ink.image(
           image: AssetImage('assets/images/achados-perdidos.png'),
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
         ),
         onTap: () async {
           Get.dialog(
@@ -231,7 +237,7 @@ class DestaquesCarousel extends StatelessWidget {
     return CarouselSlider(
       options: CarouselOptions(
         enlargeCenterPage: true,
-        height: 200,
+        height: 150,
         autoPlay: true,
       ),
       items:
@@ -290,7 +296,7 @@ class ListCategoria extends StatelessWidget {
                 categoriaEstabelecimentos.keys.toList()[index]];
             return Container(
               margin: EdgeInsets.only(top: 20),
-              height: 170,
+              height: 250,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -372,8 +378,103 @@ class ListCategoria extends StatelessWidget {
 class EstabelecimentoCard extends StatelessWidget {
   final Estabelecimento estabelecimento;
   EstabelecimentoCard(this.estabelecimento);
+  bool ligar = false;
   @override
   Widget build(BuildContext context) {
+    return Container(
+      height: 220,
+      width: 140,
+      margin: EdgeInsets.only(left: 5, right: 5),
+      padding: EdgeInsets.only(bottom: 15),
+      child: InkWell(
+        onTap: () {
+          if (!ligar) Get.to(EstabelecimentoPage(estabelecimento));
+        },
+        child: Card(
+          child: Column(children: [
+            Container(
+              height: 70,
+              width: 70,
+              margin: EdgeInsets.only(top: 10),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Hero(
+                  tag: estabelecimento.imagemUrl ??
+                      databaseService.randomNumber.toString(),
+                  child: ExtendedImage.network(
+                    estabelecimento.imagemUrl ?? databaseService.nophoto,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: AutoSizeText(
+                    estabelecimento.nome,
+                    maxLines: 2,
+                    wrapWords: false,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
+                  )),
+            ),
+            if (estabelecimento.telefonePrimarioWhatsapp)
+              Container(
+                height: 30,
+                margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
+                child: FlatButton(
+                    child: Row(
+                      children: [
+                        Icon(FlutterIcons.logo_whatsapp_ion,
+                            color: Colors.white, size: 20),
+                        Expanded(child: Container()),
+                        Text(
+                          'WHATSAPP',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    color: Colors.green,
+                    onPressed: () async {
+                      ligar = true;
+                      await utilService.ligarEstabelecimento(estabelecimento);
+                      ligar = false;
+                    }),
+              ),
+            if (!estabelecimento.telefonePrimarioWhatsapp)
+              Container(
+                margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
+                height: 30,
+                child: FlatButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.phone, color: Colors.white, size: 20),
+                        Padding(
+                          padding: EdgeInsets.all(4),
+                        ),
+                        Text(
+                          'LIGAR',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    color: Colors.blue,
+                    onPressed: () async {
+                      ligar = true;
+                      await utilService.ligarEstabelecimento(estabelecimento);
+                      ligar = false;
+                      print('ligar');
+                    }),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+  /* 
+    Avatar dos estabelecimentos antes dos cards
     return Container(
         height: 100,
         width: 100,
@@ -414,7 +515,7 @@ class EstabelecimentoCard extends StatelessWidget {
             ],
           ),
         ));
-  }
+  } */
 }
 /* 
 

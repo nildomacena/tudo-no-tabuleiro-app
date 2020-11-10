@@ -51,7 +51,7 @@ class DatabaseService {
   /// CATEGORIAS */
 
   Stream<List<Categoria>> streamCategorias() {
-    return _firestore.collection('categorias').snapshots().map(
+    return _firestore.collection('categorias').orderBy('nome').snapshots().map(
         (QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((QueryDocumentSnapshot snapshot) =>
                 Categoria.fromFirestore(snapshot))

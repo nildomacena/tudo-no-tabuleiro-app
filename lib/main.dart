@@ -2,6 +2,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/controllers/bindings/auth_binding.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
@@ -11,6 +12,9 @@ import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   AwesomeNotifications().initialize('resource://drawable/app_icon', [
     NotificationChannel(
         channelKey: 'basic_channel',
@@ -187,7 +191,8 @@ class FutureGetEstabelecimentos extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Container(
-                  child: Image.asset('assets/icon/splashscreen.png', fit: BoxFit.cover)),
+                    child: Image.asset('assets/icon/splashscreen.png',
+                        fit: BoxFit.cover)),
                 Positioned(
                   bottom: 240,
                   left: Get.width * .45,

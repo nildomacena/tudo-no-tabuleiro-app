@@ -90,7 +90,7 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                     child: ExtendedImage.network(
                       widget.estabelecimento.imagemUrl ??
                           databaseService.nophoto,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       cache: true,
                     ),
                   ),

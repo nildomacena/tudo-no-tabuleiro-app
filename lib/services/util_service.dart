@@ -5,6 +5,8 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UtilService {
   File _image;
@@ -21,6 +23,17 @@ class UtilService {
         backgroundColor: Colors.red,
         snackPosition: SnackPosition.BOTTOM,
         margin: EdgeInsets.only(bottom: 10));
+  }
+
+  ligarEstabelecimento(Estabelecimento estabelecimento) async {
+    if (estabelecimento.telefonePrimarioWhatsapp == null ||
+        estabelecimento.telefonePrimario == null) return Future.value();
+    String link = estabelecimento.telefonePrimarioWhatsapp
+        ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
+        : "tel://${estabelecimento.telefonePrimario}";
+    if (await canLaunch(link)) {
+      return launch(link);
+    }
   }
 
   showSnackBarSucesso({String titulo, String mensagem}) {
