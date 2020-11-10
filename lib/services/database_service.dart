@@ -1,10 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
+import 'package:tudo_no_tabuleiro_app/model/categoriaEstabelecimento.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:tudo_no_tabuleiro_app/model/oferta_emprego.dart';
 import 'package:tudo_no_tabuleiro_app/model/sorteio.dart';
@@ -12,6 +15,7 @@ import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento
 
 class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage storage = FirebaseStorage.instance;
   //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Estabelecimento> estabelecimentosFinal;
   bool backgroundMessage = false;
@@ -26,6 +30,7 @@ class DatabaseService {
     }
   }
 
+  DatabaseService() {}
   Future<void> checkUserBDInfo(User user) async {
     QuerySnapshot snapshot = await _firestore
         .collection('users')
@@ -66,7 +71,63 @@ class DatabaseService {
         map[e.categoria.id]['estabelecimentos'].add(e);
       }
     });
+    getCategoriasComEstabelecimentosModel();
     return map;
+  }
+
+  List<CategoriaEstabelecimento> getCategoriasComEstabelecimentosModel() {
+    List<CategoriaEstabelecimento> categoriasEstabelecimentos = List();
+
+    /* Este bloco cria as CategoriaEstabelecimento únicos por categoria */
+    estabelecimentosFinal.forEach((e) {
+      if (categoriasEstabelecimentos.isEmpty) {
+        categoriasEstabelecimentos.add(CategoriaEstabelecimento(e));
+      } else {
+        bool checkCategoria = false;
+        categoriasEstabelecimentos.forEach((c) {
+          if (e.categoria.id.contains(c.categoria.id)) checkCategoria = true;
+        });
+        if (!checkCategoria)
+          categoriasEstabelecimentos.add(CategoriaEstabelecimento(e));
+      }
+    });
+
+/* Este bloco adiciona o estabelecimento às respectivas categorias */
+    estabelecimentosFinal.forEach((e) {
+      categoriasEstabelecimentos.forEach((c) {});
+    });
+
+    return categoriasEstabelecimentos;
+    /*  estabelecimentosFinal.forEach((e) {
+      if (map[e.categoria.id] == null) {
+        map[e.categoria.id] = {
+          'nome': e.categoria.id,
+          'estabelecimentos': [e],
+          'categoria': e.categoria
+        };
+      } else {
+        map[e.categoria.id]['estabelecimentos'].add(e);
+      }
+    });
+    return map; */
+  }
+
+  Future cadastrarCategoria(File imagem, String nome) async {
+    DocumentReference ref;
+    try {
+      ref = await _firestore
+          .collection('categorias')
+          .add({'ativo': true, 'imagemUrl': '', 'nome': nome});
+      StorageTaskSnapshot taskSnapshot = await storage
+          .ref()
+          .child('estabelecimentos-temporarios/$nome')
+          .putFile(imagem)
+          .onComplete;
+      return ref.update({'imagemUrl': await taskSnapshot.ref.getDownloadURL()});
+    } catch (e) {
+      await ref.delete();
+      throw e;
+    }
   }
 
   bool categoriaPossuiEstabelecimento(Categoria categoria) {
@@ -135,13 +196,11 @@ class DatabaseService {
     return estabelecimentosFinal.length > 0;
   }
 
-
-  Estabelecimento estabelecimentoById(String id){
+  Estabelecimento estabelecimentoById(String id) {
     return estabelecimentosFinal.where((e) => e.id == id).toList()[0];
   }
 
   Future<Estabelecimento> getEstabelecimentoById(String id) async {
-
     DocumentSnapshot estabelecimentoSnapshot =
         await _firestore.doc('estabelecimentos/$id').get();
 
@@ -178,6 +237,40 @@ class DatabaseService {
     return estabelecimentosFinal
         .where((estab) => estab.destaque && estab.imagemUrl != null)
         .toList();
+  }
+
+  salvarEstabelecimentoTemporario(
+      String nome,
+      String descricao,
+      String endereco,
+      String telefone,
+      Categoria categoria,
+      bool telefonePrimarioWhatsapp,
+      File imagem) async {
+    StorageTaskSnapshot taskSnapshot = await storage
+        .ref()
+        .child('estabelecimentos-temporarios/$nome')
+        .putFile(imagem)
+        .onComplete;
+
+    await _firestore.collection('estabelecimentos').add({
+      'ativo': true,
+      'categoriaId': categoria.id,
+      'categoriaNome': categoria.nome,
+      'descricao': descricao ?? '',
+      'destaque': false,
+      'endereco': endereco,
+      'horarioFuncionamento': '',
+      'imagem1': '',
+      'imagem2': '',
+      'imagemUrl': await taskSnapshot.ref.getDownloadURL(),
+      //localização
+      'plano': 0,
+      'nome': nome,
+      'telefonePrimario': telefone,
+      'telefonePrimarioWhatsapp': telefonePrimarioWhatsapp
+    });
+    return carregarEstabelecimentos();
   }
 
   /**EMPREGOS E ACHADOS E PERDIDOS */

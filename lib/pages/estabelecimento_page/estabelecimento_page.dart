@@ -41,29 +41,79 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget customAppbar() {
+      AppBar appBar = AppBar(
+        title: Text('Demo'),
+      );
+      print(' appBar.preferredSize.height ${appBar.preferredSize.height}');
+      return Container(
+          height: appBar.preferredSize.height,
+          width: Get.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+            Colors.black38.withOpacity(.5),
+            Colors.grey[300].withOpacity(.2)
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left:5),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            iconSize: 30,
+            color: Colors.white,
+            onPressed: () {
+              Get.back();
+            },
+          ));
+    }
+
     String cor = 'rgba(134,63,63,0.68)';
     cor.substring(cor.indexOf('(') + 1, cor.length - 2).split(',');
     print(
         'print ${cor.substring(cor.indexOf('(') + 1, cor.length - 2).split(',')[0]}');
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: widget.estabelecimento.colorRGBA,
-        title: Text(widget.estabelecimento.nome),
-      ),
+      /* appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        //title: Text(widget.estabelecimento.nome),
+      ), */
       body: ListView(
         children: [
           Container(
               width: double.infinity,
-              height: 200,
-              color: Colors.grey[300],
-              child: Hero(
-                tag: widget.estabelecimento.imagemUrl ??
-                    databaseService.randomNumber.toString(),
-                child: ExtendedImage.network(
-                  widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
-                  fit: BoxFit.cover,
-                  cache: true,
-                ),
+              height: 300,
+              color: Colors.white,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Hero(
+                    tag: widget.estabelecimento.imagemUrl ??
+                        databaseService.randomNumber.toString(),
+                    child: ExtendedImage.network(
+                      widget.estabelecimento.imagemUrl ??
+                          databaseService.nophoto,
+                      fit: BoxFit.cover,
+                      cache: true,
+                    ),
+                  ),
+                  Positioned(top: 0, child: customAppbar())
+                  /* Positioned(
+                      top: 10,
+                      left: 0,
+                      child: RawMaterialButton(
+                        disabledElevation: 0,
+                        onPressed: () {
+                          Get.back();
+                        },
+                        elevation: 2,
+                        fillColor: Colors.black.withOpacity(.1),
+                        child: Icon(
+                          Icons.arrow_back,
+                          size: 33,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(5),
+                        shape: CircleBorder(),
+                      )) */
+                ],
               )
               /* Image.network(
                 widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
@@ -168,16 +218,17 @@ class ContainerInfoGerais extends StatelessWidget {
         children: [
           Container(
             child: Text(estabelecimento.nome,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500)),
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.w500)),
           ),
           Container(
             margin: EdgeInsets.only(top: 5),
-            child: Text(estabelecimento.categoria.nome ?? ''),
+            child: Text(estabelecimento.categoria.nome ?? '',
+                style: TextStyle(fontSize: 15)),
           ),
           Container(
-            margin: EdgeInsets.only(top: 5, bottom: 5),
-            child: AutoSizeText(estabelecimento.descricao ?? ''),
-          ),
+              margin: EdgeInsets.only(top: 5, bottom: 5),
+              child: AutoSizeText(estabelecimento.descricao ?? '',
+                  style: TextStyle(fontSize: 18))),
           if (estabelecimento.horarioFuncionamento != null &&
               estabelecimento.horarioFuncionamento != '')
             Container(

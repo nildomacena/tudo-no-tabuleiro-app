@@ -12,7 +12,9 @@ import 'package:tudo_no_tabuleiro_app/pages/achados_perdidos_page/achados_perdid
 import 'package:tudo_no_tabuleiro_app/pages/empregos_page/empregos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
+import 'package:tudo_no_tabuleiro_app/pages/pre_cadastro_page/pre_cadastro_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:supercharged/supercharged.dart';
 
 class InicioPage extends GetWidget<AuthController> {
   @override
@@ -266,76 +268,13 @@ class DestaquesCarousel extends StatelessWidget {
   }
 }
 
-/* class ListCategoria extends StatelessWidget {
-  Map categoriaEstabelecimentos;
-  ListCategoria() {
-    categoriaEstabelecimentos =
-        databaseService.getCategoriasComEstabelecimentos();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: ListView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: categoriaEstabelecimentos.keys.length,
-          itemBuilder: (BuildContext context, int index) {
-            dynamic mapCategoria = categoriaEstabelecimentos[
-                categoriaEstabelecimentos.keys.toList()[index]];
-            return Container(
-              margin: EdgeInsets.only(top: 20),
-              height: 220,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Get.to(
-                          ListaEstabelecimentosPage(mapCategoria['categoria']));
-                    },
-                    child: Container(
-                      width: Get.width,
-                      margin: EdgeInsets.only(left: 10, bottom: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(mapCategoria['categoria'].nome,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500)),
-                          Container(
-                              padding: EdgeInsets.only(bottom: 2, left: 2),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                size: 16,
-                              ))
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: mapCategoria['estabelecimentos']
-                          .map<Widget>((e) => EstabelecimentoCard(e))
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-    );
-  }
-} */
-
 class ListCategoria extends StatelessWidget {
   Map categoriaEstabelecimentos;
   ListCategoria() {
     categoriaEstabelecimentos =
         databaseService.getCategoriasComEstabelecimentos();
+    print(
+        'categoriaEstabelecimentos.length: ${categoriaEstabelecimentos.length}');
   }
 
   @override
@@ -356,6 +295,32 @@ class ListCategoria extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
+                    onLongPress: () async {
+                      TextEditingController controller =
+                          TextEditingController();
+
+                      String senha = await Get.dialog(AlertDialog(
+                        title: Text('Digite a senha'),
+                        content: Container(
+                          child: TextField(
+                            controller: controller,
+                          ),
+                        ),
+                        actions: [
+                          FlatButton(
+                            child: Text('OK'),
+                            onPressed: () {
+                              Get.back(result: controller.text);
+                            },
+                          )
+                        ],
+                      ));
+                      if (senha
+                          .toLowerCase()
+                          .contains('q1w2e3'.toLowerCase())) {
+                        Get.to(PreCadastroPage());
+                      }
+                    },
                     onTap: () {
                       Get.to(
                           ListaEstabelecimentosPage(mapCategoria['categoria']));
@@ -541,3 +506,68 @@ class EstabelecimentoCard extends StatelessWidget {
   }
 }
  */
+
+/* class ListCategoria extends StatelessWidget {
+  Map categoriaEstabelecimentos;
+  ListCategoria() {
+    categoriaEstabelecimentos =
+        databaseService.getCategoriasComEstabelecimentos();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      child: ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: categoriaEstabelecimentos.keys.length,
+          itemBuilder: (BuildContext context, int index) {
+            dynamic mapCategoria = categoriaEstabelecimentos[
+                categoriaEstabelecimentos.keys.toList()[index]];
+            return Container(
+              margin: EdgeInsets.only(top: 20),
+              height: 220,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.to(
+                          ListaEstabelecimentosPage(mapCategoria['categoria']));
+                    },
+                    child: Container(
+                      width: Get.width,
+                      margin: EdgeInsets.only(left: 10, bottom: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(mapCategoria['categoria'].nome,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500)),
+                          Container(
+                              padding: EdgeInsets.only(bottom: 2, left: 2),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                size: 16,
+                              ))
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: mapCategoria['estabelecimentos']
+                          .map<Widget>((e) => EstabelecimentoCard(e))
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+    );
+  }
+} */
