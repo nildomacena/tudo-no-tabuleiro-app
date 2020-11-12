@@ -15,6 +15,7 @@ import 'package:tudo_no_tabuleiro_app/pages/achados_perdidos_page/achados_perdid
 import 'package:tudo_no_tabuleiro_app/pages/empregos_page/empregos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/inicio_page/categorias_destaque.dart';
+import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pre_cadastro_page/pre_cadastro_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
@@ -27,267 +28,57 @@ class InicioPage extends GetWidget<AuthController> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(children: [
-            CategoriasDestaque(),
-            DestaquesCarousel(),
-            Divider(),
-            ListCategoria(),
-          ]),
-        ),
-      ),
-    );
-  }
-}
-
-class DestaquesCarousel extends StatelessWidget {
-  List<Estabelecimento> estabelecimentos;
-  DestaquesCarousel() {
-    estabelecimentos = databaseService.getEstabelecimentosDestaque();
-  }
-
-  Widget containerEmpregos = Container(
-    height: 130,
-    width: Get.width,
-    padding: EdgeInsets.only(left: 5, right: 5),
-    child: Material(
-      elevation: 5,
-      child: InkWell(
-        child: Ink.image(
-          image: AssetImage('assets/images/emprego.png'),
-          fit: BoxFit.fill,
-        ),
-        onTap: () async {
-          Get.dialog(
-              AlertDialog(
-                  content: Container(
-                height: 80,
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                    ),
-                    Text(
-                      'Carregando dados',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue),
-                    )
-                  ],
-                ),
-              )),
-              barrierDismissible: false);
-          try {
-            List<OfertaEmprego> ofertas =
-                await databaseService.getOfertasEmprego();
-            Get.back();
-            Get.to(EmpregosPage(ofertas));
-          } catch (e) {
-            Get.back();
-            print('Erro ofertas de emprego: $e');
-            Get.dialog(
-              AlertDialog(
-                title: Text('Erro durante a solicitação'),
-                content: Container(
-                  height: 80,
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Ocorreu um erro durante a solicitação. Tente novamente mais tarde',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  FlatButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Get.back();
-                    },
-                  )
-                ],
-              ),
-            );
-          }
-        },
-      ),
-    ),
-  );
-
-  Widget containerAchados = Container(
-    height: 130,
-    width: Get.width,
-    padding: EdgeInsets.only(left: 5, right: 5),
-    child: Material(
-      elevation: 5,
-      child: InkWell(
-        child: Ink.image(
-          image: AssetImage('assets/images/achados-perdidos.png'),
-          fit: BoxFit.fill,
-        ),
-        onTap: () async {
-          Get.dialog(
-              AlertDialog(
-                  content: Container(
-                height: 80,
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                    ),
-                    Text(
-                      'Carregando dados',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue),
-                    )
-                  ],
-                ),
-              )),
-              barrierDismissible: false);
-          try {
-            List<Achado> achados = await databaseService.getAchados();
-            Get.back();
-            Get.to(AchadosPerdidosPage(achados));
-          } catch (e) {
-            Get.back();
-            print('Erro ofertas de emprego: $e');
-            Get.dialog(
-              AlertDialog(
-                title: Text('Erro durante a solicitação'),
-                content: Container(
-                  height: 80,
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Ocorreu um erro durante a solicitação. Tente novamente mais tarde',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  FlatButton(
-                    child: Text('OK'),
-                    onPressed: () {
-                      Get.back();
-                    },
-                  )
-                ],
-              ),
-            );
-          }
-        },
-      ),
-    ),
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> itensCarrossel = [];
-    itensCarrossel = estabelecimentos.map((e) {
-      return Builder(
-        builder: (BuildContext context) {
-          return Container(
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  ExtendedImage.network(
-                    e.imagemUrl ?? databaseService.nophoto,
-                    fit: BoxFit.fill,
-                  ),
-                  Positioned.fill(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        splashColor: Colors.blue.withOpacity(.5),
-                        onTap: () {
-                          Get.to(EstabelecimentoPage(e));
-                        },
-                      ),
-                    ),
-                  )
-                ],
-              ));
-        },
-      );
-    }).toList();
-    itensCarrossel.add(Builder(
-      builder: (BuildContext context) => containerEmpregos,
-    ));
-    itensCarrossel.add(Builder(
-      builder: (BuildContext context) => containerAchados,
-    ));
-    return CarouselSlider(
-      options: CarouselOptions(
-        enlargeCenterPage: true,
-        height: 150,
-        autoPlay: true,
-      ),
-      items:
-          itensCarrossel /* estabelecimentos.map((e) {
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(
-                      e.imagemUrl,
-                      fit: BoxFit.fill,
-                    ),
-                    Positioned.fill(
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          splashColor: Colors.blue.withOpacity(.5),
-                          onTap: () {
-                            Get.to(EstabelecimentoPage(e));
-                          },
-                        ),
-                      ),
-                    )
-                  ],
-                ));
+        child: RefreshIndicator(
+          onRefresh: () async {
+            return controller.recarregarEstabelecimentos();
           },
-        );
-      }).toList() */
-      ,
+          child: SingleChildScrollView(
+            child: Column(children: [
+              CategoriasDestaque(),
+              DestaquesCarousel(),
+              Divider(),
+              ListCategoria(),
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }
 
-class ListCategoria extends StatelessWidget {
-  Map categoriaEstabelecimentos;
+class ListCategoria extends StatefulWidget {
+  /* Map categoriaEstabelecimentos;
   ListCategoria() {
     categoriaEstabelecimentos =
         databaseService.getCategoriasComEstabelecimentos();
     print(
         'categoriaEstabelecimentos.length: ${categoriaEstabelecimentos.length}');
+  } */
+
+  @override
+  _ListCategoriaState createState() => _ListCategoriaState();
+}
+
+class _ListCategoriaState extends State<ListCategoria> {
+  List<Estabelecimento> estabelecimentos = List();
+
+  @override
+  void initState() {
+    if (databaseService.estabelecimentosCarregados)
+      estabelecimentos = databaseService.estabelecimentosFinal;
+    else
+      databaseService.getEstabelecimentos().then((value) {
+        setState(() {
+          estabelecimentos = value;
+        });
+      });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: ListView.builder(
+    Widget listaEstabelecimentos(dynamic categoriaEstabelecimentos) {
+      return ListView.builder(
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: categoriaEstabelecimentos.keys.length,
@@ -370,8 +161,39 @@ class ListCategoria extends StatelessWidget {
                 ],
               ),
             );
-          }),
-    );
+          });
+    }
+
+    return Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: estabelecimentos.isEmpty
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : listaEstabelecimentos(databaseService
+                .getCategoriasComEstabelecimentos()) /*  databaseService.estabelecimentosCarregados
+            ? listaEstabelecimentos(
+                databaseService.getCategoriasComEstabelecimentos())
+            : FutureBuilder(
+                future: databaseService.futureCategoriasComEstabelecimentos(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasError)
+                    return Container(
+                        child: Text(
+                            'Ocorreu um erro durante a solicitação: ${snapshot.error}'));
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    default:
+                      dynamic categoriaEstabelecimentos = snapshot.data;
+                      return listaEstabelecimentos(categoriaEstabelecimentos);
+                  }
+                },
+              ) */
+        );
   }
 }
 
@@ -419,8 +241,7 @@ class EstabelecimentoCard extends StatelessWidget {
                     style: TextStyle(fontSize: 15),
                   )),
             ),
-            if (estabelecimento.telefonePrimario != null &&
-                estabelecimento.telefonePrimarioWhatsapp)
+            if (estabelecimento.telefonePrimarioWhatsapp)
               Container(
                 height: 30,
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
@@ -443,8 +264,7 @@ class EstabelecimentoCard extends StatelessWidget {
                       ligar = false;
                     }),
               ),
-            if (estabelecimento.telefonePrimario != null &&
-                !estabelecimento.telefonePrimarioWhatsapp)
+            if (!estabelecimento.telefonePrimarioWhatsapp)
               Container(
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
                 height: 30,

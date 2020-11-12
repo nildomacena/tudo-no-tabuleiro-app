@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
@@ -17,7 +19,8 @@ class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
   //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  List<Estabelecimento> estabelecimentosFinal;
+  List<Estabelecimento> estabelecimentosFinal = List();
+  List<Categoria> categoriasFinal = List();
   bool backgroundMessage = false;
 
   final String nophoto =
@@ -48,7 +51,22 @@ class DatabaseService {
       });
   }
 
+  Future<dynamic> inicializarFirebase() async {
+    estabelecimentosFinal = await getEstabelecimentos();
+    categoriasFinal = await getCategorias();
+    return;
+  }
+
   /// CATEGORIAS */
+
+  Future<List<Categoria>> getCategorias() async {
+    QuerySnapshot snapshot =
+        await _firestore.collection('categorias').orderBy('nome').get();
+    return snapshot.docs
+        .map((QueryDocumentSnapshot snapshot) =>
+            Categoria.fromFirestore(snapshot))
+        .toList();
+  }
 
   Stream<List<Categoria>> streamCategorias() {
     return _firestore.collection('categorias').orderBy('nome').snapshots().map(
@@ -72,6 +90,30 @@ class DatabaseService {
       }
     });
     getCategoriasComEstabelecimentosModel();
+    return map;
+  }
+
+  Future<dynamic> futureCategoriasComEstabelecimentos() async {
+    List<Estabelecimento> estabelecimentos = List();
+    if (estabelecimentosFinal == null || estabelecimentosFinal.isEmpty) {
+      estabelecimentos = await getEstabelecimentos();
+      estabelecimentosFinal = estabelecimentos;
+    } else {
+      estabelecimentos = estabelecimentosFinal;
+    }
+    print('estabelecimentos: $estabelecimentos');
+    Map map = {};
+    estabelecimentos.forEach((e) {
+      if (map[e.categoria.id] == null) {
+        map[e.categoria.id] = {
+          'nome': e.categoria.id,
+          'estabelecimentos': [e],
+          'categoria': e.categoria
+        };
+      } else {
+        map[e.categoria.id]['estabelecimentos'].add(e);
+      }
+    });
     return map;
   }
 
@@ -191,6 +233,9 @@ class DatabaseService {
 
   /**ESTABELECIMENTOS */
 
+  bool get estabelecimentosCarregados =>
+      estabelecimentosFinal != null && estabelecimentosFinal.isNotEmpty;
+
   Future<bool> carregarEstabelecimentos() async {
     estabelecimentosFinal = await getEstabelecimentos();
     return estabelecimentosFinal.length > 0;
@@ -224,12 +269,20 @@ class DatabaseService {
     });
     //GAMBIARRA PARA QUE A FUNÇÃO NÃO FINALIZE ANTES DE ATUALIZAR OS ESTABELECIMENTOS
     await Future.delayed(Duration(seconds: 1));
+    estabelecimentosFinal = estabelecimentos;
     return estabelecimentos;
   }
 
   getEstabelecimentoPorCategoria(Categoria categoria) {
     return estabelecimentosFinal
         .where((estab) => estab.categoria.id.contains(categoria.id ?? 'sem-id'))
+        .toList();
+  }
+
+  Future<List<Estabelecimento>> futureEstabelecimentosDestaque() async {
+    List<Estabelecimento> estabelecimentos = await getEstabelecimentos();
+    return estabelecimentos
+        .where((estab) => estab.destaque && estab.imagemUrl != null)
         .toList();
   }
 

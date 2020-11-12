@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -7,6 +8,7 @@ import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:supercharged/supercharged.dart';
 
 class PesquisaPage extends StatelessWidget {
   PesquisaPage();
@@ -55,13 +57,16 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
     widget.categorias = widget.categorias
         .where((c) => databaseService.categoriaPossuiEstabelecimento(c))
         .toList();
+    widget.categorias.sort((a, b) => a.nome.compareTo(b.nome));
     categoriasFiltradas = widget.categorias;
     estabelecimentos = databaseService.estabelecimentosFinal;
     estabelecimentosFiltrados = List();
+    print(widget.categorias);
     super.initState();
   }
 
   TextEditingController searchController = TextEditingController();
+  FocusNode focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
 //    print('Estabelecimentos $estabelecimentos - $estabelecimentosFiltrados');
@@ -69,9 +74,27 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
       child: ListView(
         children: [
           TextField(
+            focusNode: focusNode,
             decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Pesquise uma categoria ou estabelecimento',
+                //prefixIcon: ,
+                suffixIcon: IconButton(
+                  onPressed: searchController.text.length > 0
+                      ? () {
+                          searchController.clear();
+                          setState(() {
+                            categoriasFiltradas = widget.categorias;
+                          });
+                        }
+                      : () {
+                          focusNode.unfocus();
+                          setState(() {
+                            categoriasFiltradas = widget.categorias;
+                          });
+                        },
+                  icon: Icon(Icons.clear),
+                ),
                 icon: Icon(Icons.search)),
             controller: searchController,
             onChanged: (txt) {
@@ -192,46 +215,62 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                     onTap: () {
                       Get.to(EstabelecimentoPage(estabelecimento));
                     },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              top: BorderSide(color: Colors.grey, width: 1),
-                              bottom:
-                                  BorderSide(color: Colors.grey, width: 1))),
-                      height: 80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 80,
-                            width: 80,
-                            child: Image.network(estabelecimento.imagemUrl,
-                                fit: BoxFit.cover),
-                          ),
-                          Expanded(
-                            child: Container(
-                              //margin: EdgeInsets.only(top:5),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    estabelecimento.nome ?? '',
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    'Categoria: ${estabelecimento.categoria.nome}',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400),
-                                  )
-                                ],
-                              ),
+                    child: Material(
+                      elevation: 5,
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 10),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(color: Colors.grey, width: 1),
+                                bottom:
+                                    BorderSide(color: Colors.grey, width: 1))),
+                        height: 92,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 92,
+                              width: 92,
+                              child: Image.network(estabelecimento.imagemUrl,
+                                  fit: BoxFit.cover),
                             ),
-                          )
-                        ],
+                            Expanded(
+                              child: Container(
+                                //margin: EdgeInsets.only(top:5),
+                                padding: EdgeInsets.only(
+                                    left: 5, right: 5, bottom: 5),
+
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      estabelecimento.nome ?? '',
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    AutoSizeText(
+                                      estabelecimento.endereco ?? '',
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    AutoSizeText(
+                                      'Categoria: ${estabelecimento.categoria.nome}',
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   );

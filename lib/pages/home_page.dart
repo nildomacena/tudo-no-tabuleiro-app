@@ -3,7 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
-import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page.dart';
+import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page_streams.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pesquisa_page/pesquisa_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/sorteios_page/sorteios_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,11 +30,20 @@ class UtilService {
     if (estabelecimento.telefonePrimarioWhatsapp == null ||
         estabelecimento.telefonePrimario == null) return Future.value();
     String link = estabelecimento.telefonePrimarioWhatsapp
-        ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
+        ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}&text=Ol%C3%A1%2C%20te%20achei%20no%20aplicativo%20Tudo%20no%20Tabuleiro"
         : "tel://${estabelecimento.telefonePrimario}";
     if (await canLaunch(link)) {
       return launch(link);
     }
+  }
+
+  abrirLocalizacao(Estabelecimento estabelecimento) async {
+    final availableMaps = await MapLauncher.installedMaps;
+    await availableMaps.first.showMarker(
+        coords: Coords(
+            estabelecimento.localizacao.lat, estabelecimento.localizacao.lng),
+        title: estabelecimento.nome,
+        zoom: 15);
   }
 
   showSnackBarSucesso({String titulo, String mensagem}) {

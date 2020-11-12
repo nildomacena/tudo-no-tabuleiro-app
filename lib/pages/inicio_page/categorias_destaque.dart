@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
@@ -18,7 +19,7 @@ class CategoriasDestaque extends StatelessWidget {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(top: 15),
-      height: 160,
+      height: 150,
       width: double.infinity,
       child: Column(
         children: [
@@ -53,13 +54,14 @@ class CategoriasDestaque extends StatelessWidget {
                             child: Container(
                               height: 80,
                               width: 80,
-                              margin: EdgeInsets.only(left: 15, right: 15),
+                              margin: EdgeInsets.only(left: 5, right: 5),
                               child: Column(
                                 children: [
-                                  Image.network(
+                                  ExtendedImage.network(
                                     categoria.icone,
+                                    cache: true,
                                     fit: BoxFit.fill,
-                                    height: 80,
+                                    height: 60,
                                   ),
                                   AutoSizeText(
                                     categoria.nome,

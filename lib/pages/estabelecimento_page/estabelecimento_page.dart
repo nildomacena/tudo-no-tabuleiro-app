@@ -8,6 +8,7 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/carossel_imagens.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/listview_itens.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EstabelecimentoPage extends StatefulWidget {
@@ -55,7 +56,7 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
             Colors.grey[300].withOpacity(.2)
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
           alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left:5),
+          padding: EdgeInsets.only(left: 5),
           child: IconButton(
             icon: Icon(Icons.arrow_back),
             iconSize: 30,
@@ -284,12 +285,7 @@ class ContainerInfoGerais extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () async {
-                      final availableMaps = await MapLauncher.installedMaps;
-                      await availableMaps.first.showMarker(
-                          coords: Coords(estabelecimento.localizacao.lat,
-                              estabelecimento.localizacao.lng),
-                          title: estabelecimento.nome,
-                          zoom: 15);
+                      await utilService.abrirLocalizacao(estabelecimento);
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: 5),
@@ -341,13 +337,10 @@ class ContainerInfoGerais extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       onTap: () async {
-                        if (estabelecimento.telefonePrimarioWhatsapp == null ||
-                            estabelecimento.telefonePrimario == null) return;
-                        String link = estabelecimento.telefonePrimarioWhatsapp
-                            ? "https://api.whatsapp.com/send?phone=55${estabelecimento.telefonePrimario}"
-                            : "tel://${estabelecimento.telefonePrimario}";
-                        if (await canLaunch(link)) {
-                          launch(link);
+                        try {
+                          utilService.ligarEstabelecimento(estabelecimento);
+                        } catch (e) {
+                          print('Ocorreu um erro ao ligar');
                         }
                       },
                       child: Row(

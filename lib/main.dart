@@ -10,7 +10,7 @@ import 'package:tudo_no_tabuleiro_app/pages/gateway_notificacao/gateway_notifica
 import 'package:tudo_no_tabuleiro_app/pages/home_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -23,7 +23,8 @@ void main() {
         defaultColor: Color(0xFF9D50DD),
         ledColor: Colors.white)
   ]);
-
+  await Firebase.initializeApp();
+  //await databaseService.carregarCategoriasEEstabelecimentos();
   runApp(MyApp());
 }
 
@@ -96,27 +97,12 @@ class MyApp extends StatelessWidget {
     databaseService.backgroundMessage = true;
   }
 
-  static Future myBackgroundMessageHandler(Map<String, dynamic> message) {
-    print('myBackgroundMessageHandler');
-    if (message.containsKey('data')) {
-// Handle data message
-      final dynamic data = message['data'];
-      print('myBackgroundMessageHandler $data');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     AwesomeNotifications().actionStream.listen((receivedNotification) {
-      /* Navigator.of(context).pushName(context, '/NotificationPage', arguments: {
-        id: receivedNotification.id
-      }); */ // your page params. I recomend to you to pass all *receivedNotification* object
       print('receivedNotification $receivedNotification');
     });
     AwesomeNotifications().displayedStream.listen((receivedNotification) {
-      /* Navigator.of(context).pushName(context, '/NotificationPage', arguments: {
-        id: receivedNotification.id
-      }); */ // your page params. I recomend to you to pass all *receivedNotification* object
       print('receivedNotification displayed stream $receivedNotification');
     });
     return GetMaterialApp(
@@ -125,10 +111,11 @@ class MyApp extends StatelessWidget {
       title: 'Tudo no Tabuleiro',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: Colors.blue[900],
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: FutureBuilder(
-          future: Firebase.initializeApp(),
+          future: databaseService.inicializarFirebase(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -136,13 +123,14 @@ class MyApp extends StatelessWidget {
               );
             }
             if (snapshot.connectionState == ConnectionState.done) {
-              return FutureGetEstabelecimentos(
+              return HomePage(
                 selectedTab: selectedTab ?? 0,
                 estabelecimentoIdNotificacao: estabelecimentoIdNotificacao,
               );
             }
             return Container(
                 child: Stack(
+              fit: StackFit.expand,
               children: [
                 Image.asset('assets/icon/splashscreen.png', fit: BoxFit.cover),
                 Positioned(
@@ -160,7 +148,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+/* 
 class FutureGetEstabelecimentos extends StatelessWidget {
   int selectedTab;
   String estabelecimentoIdNotificacao;
@@ -208,3 +196,4 @@ class FutureGetEstabelecimentos extends StatelessWidget {
         });
   }
 }
+ */

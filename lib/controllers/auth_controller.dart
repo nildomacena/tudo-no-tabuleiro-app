@@ -20,7 +20,7 @@ class AuthController extends GetxController {
   void onInit() {
     print('onInit');
     _firebaseUser.bindStream(_auth.authStateChanges());
-   // initializeFCM();
+    // initializeFCM();
   }
 
   /* Future initializeFCM() async {
@@ -70,6 +70,11 @@ class AuthController extends GetxController {
     } catch (e) {
       print('Ocorreu um erro durante o login: $e');
     }
+  }
+
+  Future<void> recarregarEstabelecimentos() async {
+    await databaseService.inicializarFirebase();
+    update();
   }
 
   Future<void> signOut() {

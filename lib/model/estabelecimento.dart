@@ -83,6 +83,10 @@ class Estabelecimento {
         linkRedeSocial.length > 0;
   }
 
+  bool get possuiLocalizacao {
+    return !localizacao.isNull && !localizacao.lat.isNull;
+  }
+
   Color get colorRGBA {
     if (cor == null || cor.length <= 0) return Get.theme.primaryColor;
     List<String> listRGBO =
@@ -101,6 +105,8 @@ class Estabelecimento {
   factory Estabelecimento.fromFirestore(
       DocumentSnapshot snapshot, QuerySnapshot snapshotProdutos) {
     List<Produto> produtos = [];
+    String
+        endereco; //Workaroud para não pegar endereço completo que inclui cidade, estado, cep etc
     List<String> tagsAux =
         []; //Variavel pra auxiliar num bug ao trazer as tags do banco de dados
 
@@ -122,6 +128,17 @@ class Estabelecimento {
         tagsAux.add(t.toString());
       });
     }
+    try {
+      if (data['endereco'].length > 15 &&
+          data['endereco'].indexOf('Macei') > 0) {
+        endereco = data['endereco']
+            .substring(0, data['endereco'].indexOf('Macei') - 2);
+      } else {
+        endereco = data['endereco'];
+      }
+    } catch (e) {
+      endereco = data['endereco'];
+    }
 
     return Estabelecimento(
       id: snapshot.id,
@@ -131,7 +148,7 @@ class Estabelecimento {
       categoria: categoria,
       produtos: produtos,
       destaque: data['destaque'] ?? false,
-      endereco: data['endereco'],
+      endereco: endereco,
       horarioFuncionamento: data['horarioFuncionamento'],
       imagem1: data['imagem1'],
       imagem2: data['imagem2'],

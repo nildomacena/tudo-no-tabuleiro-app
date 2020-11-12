@@ -71,7 +71,7 @@ class _SorteiosAtivosTabState extends State<SorteiosAtivosTab> {
                       else if (snapshot.data.length == 0)
                         return Container(
                           padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
-                          height: 100,
+                          height: 200,
                           width: MediaQuery.of(context).size.width,
                           child: Text(
                             "No momento não há nenhum sorteio ativo. Mas fique atento, em breve novidades!!",
