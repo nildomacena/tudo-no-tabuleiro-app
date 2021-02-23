@@ -3,6 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
 import 'package:tudo_no_tabuleiro_app/pages/visualizar_imagem_page/visualizar_imagem_page.dart';
+import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 
 class AchadosPerdidosPage extends StatelessWidget {
   final List<Achado> achados;
@@ -47,7 +48,9 @@ class AchadosPerdidosPage extends StatelessWidget {
                                 )
                               ],
                             )),
-                        onPressed: () {}),
+                        onPressed: () {
+                          utilService.contatoAdmin('Olá, gostaria de reportar um achado ou perdido');
+                        }),
                   )
                 ],
               )),

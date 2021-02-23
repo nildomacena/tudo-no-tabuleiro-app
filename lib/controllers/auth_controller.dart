@@ -4,23 +4,65 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:location/location.dart';
 import 'package:tudo_no_tabuleiro_app/pages/home_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 
 class AuthController extends GetxController {
   FirebaseAuth _auth = FirebaseAuth.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
+  Location location = Location();
+  LocationData lData;
   //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
   Rx<User> _firebaseUser = Rx<User>();
-
+  LocationData locationDataAsync;
+  Rx<LocationData> _locationData = Rx<LocationData>();
   User get user => _firebaseUser?.value;
+  LocationData get locationData => _locationData?.value;
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
 
   @override
   void onInit() {
     print('onInit');
-    _firebaseUser.bindStream(_auth.authStateChanges());
+    location.getLocation();
+   /*  _firebaseUser.bindStream(_auth.authStateChanges());
+    _locationData.bindStream(location.onLocationChanged);
+    _locationData.listen((location) {
+      print('location no authcontroller: $location');
+    });
+    initDistancia(); */
+    super.onInit();
     // initializeFCM();
+  }
+
+   @override
+  void onReady() {
+    super.onReady();
+    print("onReady()");
+  }
+
+  initDistancia() async {
+    print('initDistancia authcontroller');
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    locationDataAsync = await location.getLocation();
+    print('locationData AuthController: $locationData');
+    update();
   }
 
   /* Future initializeFCM() async {
@@ -74,6 +116,11 @@ class AuthController extends GetxController {
 
   Future<void> recarregarEstabelecimentos() async {
     await databaseService.inicializarFirebase();
+    update();
+  }
+
+  Future getLocation() async {
+    lData = await location.getLocation();
     update();
   }
 

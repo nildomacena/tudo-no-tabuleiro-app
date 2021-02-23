@@ -3,10 +3,12 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
-import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page_streams.dart';
+import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page_state.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pesquisa_page/pesquisa_page.dart';
+import 'package:tudo_no_tabuleiro_app/pages/servicos_page/servicos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/sorteios_page/sorteios_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 
 class HomePage extends StatefulWidget {
   bool itemAdicionado;
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     InicioPage(),
     PesquisaPage(),
     SorteiosPage(),
+    ServicosPage()
     /* SorteiosPage(), */
   ];
 
@@ -92,8 +95,8 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(FontAwesome.search), label: 'Buscar'),
           BottomNavigationBarItem(
               icon: Icon(FontAwesome.gift), label: 'Sorteios'),
-          /* BottomNavigationBarItem(
-              icon: Icon(FontAwesome5.handshake), title: Text('Social')), */
+          /*    BottomNavigationBarItem(
+              icon: Icon(FontAwesome.handshake_o), label: 'Serviços'), */
         ],
         currentIndex: selectedIndex,
         selectedItemColor: Colors.amber[800],

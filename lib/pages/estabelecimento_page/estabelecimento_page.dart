@@ -12,7 +12,7 @@ import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EstabelecimentoPage extends StatefulWidget {
-  final Estabelecimento estabelecimento;
+  Estabelecimento estabelecimento;
 
   EstabelecimentoPage(this.estabelecimento);
   @override
@@ -45,6 +45,17 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
     Widget customAppbar() {
       AppBar appBar = AppBar(
         title: Text('Demo'),
+        actions: [
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {},
+                child: Icon(
+                  Icons.search,
+                  size: 26.0,
+                ),
+              )),
+        ],
       );
       print(' appBar.preferredSize.height ${appBar.preferredSize.height}');
       return Container(
@@ -57,13 +68,63 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 5),
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            iconSize: 30,
-            color: Colors.white,
-            onPressed: () {
-              Get.back();
-            },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                iconSize: 30,
+                color: Colors.white,
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+              Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      TextEditingController controller =
+                          TextEditingController();
+                      String problema = await Get.dialog(AlertDialog(
+                        title: Text('Reportar problema'),
+                        content: TextField(
+                          controller: controller,
+                          decoration: InputDecoration(
+                              hintMaxLines: 2,
+                              hintText:
+                                  'Nos conte o problema que você encontrou.'),
+                        ),
+                        actions: [
+                          FlatButton(
+                            child: Text('CANCELAR'),
+                            onPressed: () {
+                              Get.back(result: null);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text('ENVIAR'),
+                            onPressed: () {
+                              Get.back(result: controller.text);
+                            },
+                          )
+                        ],
+                      ));
+                      if (problema != null && problema.length > 4) {
+                        try {
+                          await databaseService.reportarErro(
+                              widget.estabelecimento, problema);
+                        } catch (e) {
+                          print('ocorreu um erro');
+                        }
+                      }
+                    },
+                    child: Icon(
+                      Icons.report,
+                      size: 26.0,
+                      color: Colors.red,
+                    ),
+                  )),
+            ],
           ));
     }
 
@@ -76,60 +137,71 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
         backgroundColor: Colors.transparent,
         //title: Text(widget.estabelecimento.nome),
       ), */
-      body: ListView(
-        children: [
-          Container(
-              width: double.infinity,
-              height: 300,
-              color: Colors.white,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Hero(
-                    tag: widget.estabelecimento.imagemUrl ??
-                        databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
-                      widget.estabelecimento.imagemUrl ??
-                          databaseService.nophoto,
-                      fit: BoxFit.fill,
-                      cache: true,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          try {
+            widget.estabelecimento = await databaseService
+                .getEstabelecimentoById(widget.estabelecimento.id);
+            setState(() {});
+          } catch (e) {
+            utilService.showSnackBarErro();
+          }
+        },
+        child: ListView(
+          children: [
+            Container(
+                width: double.infinity,
+                height: 300,
+                color: Colors.white,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Hero(
+                      tag: widget.estabelecimento.imagemUrl ??
+                          databaseService.randomNumber.toString(),
+                      child: ExtendedImage.network(
+                        widget.estabelecimento.imagemUrl ??
+                            databaseService.nophoto,
+                        fit: BoxFit.fill,
+                        cache: true,
+                      ),
                     ),
-                  ),
-                  Positioned(top: 0, child: customAppbar())
-                  /* Positioned(
-                      top: 10,
-                      left: 0,
-                      child: RawMaterialButton(
-                        disabledElevation: 0,
-                        onPressed: () {
-                          Get.back();
-                        },
-                        elevation: 2,
-                        fillColor: Colors.black.withOpacity(.1),
-                        child: Icon(
-                          Icons.arrow_back,
-                          size: 33,
-                          color: Colors.white,
-                        ),
-                        padding: EdgeInsets.all(5),
-                        shape: CircleBorder(),
-                      )) */
-                ],
-              )
-              /* Image.network(
-                widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
-                fit: BoxFit.cover), */
-              ),
-          ContainerInfoGerais(widget.estabelecimento),
-          if (widget.estabelecimento.produtos != null &&
-              widget.estabelecimento.produtos.length > 0)
-            ListViewItens(widget.estabelecimento.produtos),
-          if ((widget.estabelecimento.imagem1 != null &&
-                  widget.estabelecimento.imagem1 != "") ||
-              widget.estabelecimento.imagem2 != null &&
-                  widget.estabelecimento.imagem2 != "")
-            CarrosselImagens(widget.estabelecimento)
-        ],
+                    Positioned(top: 0, child: customAppbar())
+                    /* Positioned(
+                        top: 10,
+                        left: 0,
+                        child: RawMaterialButton(
+                          disabledElevation: 0,
+                          onPressed: () {
+                            Get.back();
+                          },
+                          elevation: 2,
+                          fillColor: Colors.black.withOpacity(.1),
+                          child: Icon(
+                            Icons.arrow_back,
+                            size: 33,
+                            color: Colors.white,
+                          ),
+                          padding: EdgeInsets.all(5),
+                          shape: CircleBorder(),
+                        )) */
+                  ],
+                )
+                /* Image.network(
+                  widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
+                  fit: BoxFit.cover), */
+                ),
+            ContainerInfoGerais(widget.estabelecimento),
+            if (widget.estabelecimento.produtos != null &&
+                widget.estabelecimento.produtos.length > 0)
+              ListViewItens(widget.estabelecimento.produtos),
+            if ((widget.estabelecimento.imagem1 != null &&
+                    widget.estabelecimento.imagem1 != "") ||
+                widget.estabelecimento.imagem2 != null &&
+                    widget.estabelecimento.imagem2 != "")
+              CarrosselImagens(widget.estabelecimento)
+          ],
+        ),
       ),
     );
 

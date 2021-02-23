@@ -1,23 +1,30 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:tudo_no_tabuleiro_app/controllers/auth_controller.dart';
+import 'package:tudo_no_tabuleiro_app/model/achado.dart';
+import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
+import 'package:tudo_no_tabuleiro_app/model/oferta_emprego.dart';
+import 'package:tudo_no_tabuleiro_app/pages/achados_perdidos_page/achados_perdidos_page.dart';
+import 'package:tudo_no_tabuleiro_app/pages/empregos_page/empregos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/inicio_page/categorias_destaque.dart';
 import 'package:tudo_no_tabuleiro_app/pages/inicio_page/destaques_carousel.dart';
+import 'package:tudo_no_tabuleiro_app/pages/inicio_page/inicio_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pre_cadastro_page/pre_cadastro_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 
 class InicioPage extends GetWidget<AuthController> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,20 +49,23 @@ class InicioPage extends GetWidget<AuthController> {
 }
 
 class ListCategoria extends StatefulWidget {
+  /* Map categoriaEstabelecimentos;
+  ListCategoria() {
+    categoriaEstabelecimentos =
+        databaseService.getCategoriasComEstabelecimentos();
+    print(
+        'categoriaEstabelecimentos.length: ${categoriaEstabelecimentos.length}');
+  } */
+
   @override
   _ListCategoriaState createState() => _ListCategoriaState();
 }
 
 class _ListCategoriaState extends State<ListCategoria> {
   List<Estabelecimento> estabelecimentos = List();
-  LocationData locationData;
-  Location location = Location();
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
 
   @override
   void initState() {
-    //initDistancia();
     if (databaseService.estabelecimentosCarregados)
       estabelecimentos = databaseService.estabelecimentosFinal;
     else
@@ -67,31 +77,8 @@ class _ListCategoriaState extends State<ListCategoria> {
     super.initState();
   }
 
-  initDistancia() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    locationData = await location.getLocation();
-    setState(() {});
-
-    print('locationData: $locationData');
-  }
-
   @override
   Widget build(BuildContext context) {
-    print('build listCategoria');
     Widget listaEstabelecimentos(dynamic categoriaEstabelecimentos) {
       return ListView.builder(
           physics: NeverScrollableScrollPhysics(),
@@ -168,8 +155,7 @@ class _ListCategoriaState extends State<ListCategoria> {
                     child: ListView(
                       scrollDirection: Axis.horizontal,
                       children: mapCategoria['estabelecimentos']
-                          .map<Widget>(
-                              (e) => EstabelecimentoCard(e, locationData))
+                          .map<Widget>((e) => EstabelecimentoCard(e))
                           .toList(),
                     ),
                   ),
@@ -213,72 +199,15 @@ class _ListCategoriaState extends State<ListCategoria> {
   }
 }
 
-class EstabelecimentoCard extends StatefulWidget {
+class EstabelecimentoCard extends StatelessWidget {
   final Estabelecimento estabelecimento;
-  final LocationData locationData;
-  EstabelecimentoCard(this.estabelecimento, this.locationData);
-
-  @override
-  _EstabelecimentoCardState createState() => _EstabelecimentoCardState();
-}
-
-class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
+  EstabelecimentoCard(this.estabelecimento);
   bool ligar = false;
-  LocationData locationData;
-  Location location = Location();
-  String distancia;
-  @override
-  void initState() {
-    super.initState();
-    if (widget.locationData != null) {
-      utilService
-          .calcularDistancia(widget.estabelecimento, widget.locationData)
-          .then((value) {
-        setState(() {
-          distancia = (value / 1000).toStringAsFixed(2);
-        });
-      });
-    }
-    //initDistancia(); Retirado para testes no início page
-    /*  utilService.calcularDistancia(widget.estabelecimento).then((value) {
-      if (distancia == null)
-        setState(() {
-          distancia = (value / 1000).toStringAsFixed(2);
-        });
-      else {}
-    }); */
-  }
-
-  initDistancia() async {
-    location.onLocationChanged.listen((locationData) async {
-      /*  print('LocationData initDistancia: $locationData'); */
-      if (distancia == null) {
-        distancia = (await utilService.calcularDistancia(
-                    widget.estabelecimento, locationData) /
-                1000)
-            .toStringAsFixed(2);
-        setState(() {});
-      }
-    });
-
-    /*  distancia =
-        (await utilService.calcularDistancia(widget.estabelecimento) / 1000)
-            .toStringAsFixed(2); //Primeiro busca a localização em tempo real
-
-    utilService.calcularDistancia(widget.estabelecimento).then((value) {
-      if (distancia == null)
-        setState(() {
-          distancia = (value / 1000).toStringAsFixed(2);
-        });
-      else {}
-    }); */
-  }
-
   @override
   Widget build(BuildContext context) {
-    /* StreamBuilder<String> futureDistancia() {
+    StreamBuilder<String> futureDistancia() {
       return StreamBuilder(
-        stream: utilService.streamLocationData(widget.estabelecimento),
+        stream: utilService.streamLocationData(estabelecimento),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -303,7 +232,7 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
           }
         },
       );
-    } */
+    }
 
     return Container(
       height: 260,
@@ -312,7 +241,7 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
       padding: EdgeInsets.only(bottom: 15),
       child: InkWell(
         onTap: () {
-          if (!ligar) Get.to(EstabelecimentoPage(widget.estabelecimento));
+          if (!ligar) Get.to(EstabelecimentoPage(estabelecimento));
         },
         child: Card(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -323,10 +252,10 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),
                 child: Hero(
-                  tag: widget.estabelecimento.imagemUrl ??
+                  tag: estabelecimento.imagemUrl ??
                       databaseService.randomNumber.toString(),
                   child: ExtendedImage.network(
-                    widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
+                    estabelecimento.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -337,7 +266,7 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
               child: Container(
                   margin: EdgeInsets.only(top: 5),
                   child: AutoSizeText(
-                    widget.estabelecimento.nome,
+                    estabelecimento.nome,
                     maxLines: 2,
                     wrapWords: false,
                     textAlign: TextAlign.center,
@@ -345,20 +274,9 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
                   )),
             ),
             Container(
-              child: distancia != null && !distancia.contains('-')
-                  ? Container(
-                      height: 40,
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.location_on, color: Colors.red, size: 20),
-                          Text('$distancia km'),
-                        ],
-                      ))
-                  : Container(),
+              child: futureDistancia(),
             ),
-            if (widget.estabelecimento.telefonePrimarioWhatsapp)
+            if (estabelecimento.telefonePrimarioWhatsapp)
               Container(
                 height: 30,
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
@@ -377,12 +295,11 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
                     color: Colors.green,
                     onPressed: () async {
                       ligar = true;
-                      await utilService
-                          .ligarEstabelecimento(widget.estabelecimento);
+                      await utilService.ligarEstabelecimento(estabelecimento);
                       ligar = false;
                     }),
               ),
-            if (!widget.estabelecimento.telefonePrimarioWhatsapp)
+            if (!estabelecimento.telefonePrimarioWhatsapp)
               Container(
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
                 height: 30,
@@ -403,8 +320,7 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
                     color: Colors.blue,
                     onPressed: () async {
                       ligar = true;
-                      await utilService
-                          .ligarEstabelecimento(widget.estabelecimento);
+                      await utilService.ligarEstabelecimento(estabelecimento);
                       ligar = false;
                       print('ligar');
                     }),
@@ -414,6 +330,49 @@ class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
       ),
     );
   }
+  /* 
+    Avatar dos estabelecimentos antes dos cards
+    return Container(
+        height: 100,
+        width: 100,
+        //margin: EdgeInsets.only(right: 5),
+        child: InkWell(
+          onTap: () {
+            Get.to(EstabelecimentoPage(estabelecimento));
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 72,
+                width: 72,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Hero(
+                    tag: estabelecimento.imagemUrl ??
+                        databaseService.randomNumber.toString(),
+                    child: ExtendedImage.network(
+                      estabelecimento.imagemUrl ?? databaseService.nophoto,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Text(estabelecimento.nome,
+                    maxLines: 2,
+                    softWrap: true,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    )),
+              )
+            ],
+          ),
+        ));
+  } */
 }
 /* 
 

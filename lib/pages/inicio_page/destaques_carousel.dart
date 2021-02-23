@@ -9,6 +9,7 @@ import 'package:tudo_no_tabuleiro_app/pages/achados_perdidos_page/achados_perdid
 import 'package:tudo_no_tabuleiro_app/pages/empregos_page/empregos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 
 class DestaquesCarousel extends StatefulWidget {
   List<Estabelecimento> estabelecimentos = List();
@@ -184,6 +185,56 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
     ),
   );
 
+  Widget containerContato = Container(
+    height: 130,
+    width: Get.width,
+    padding: EdgeInsets.only(left: 5, right: 5),
+    child: Material(
+      elevation: 5,
+      child: InkWell(
+        child: Ink.image(
+          image: AssetImage('assets/images/divulgacao.png'),
+          fit: BoxFit.fill,
+        ),
+        onTap: () async {
+          try {
+            utilService.entrarEmContato();
+          } catch (e) {
+            Get.back();
+            print('Erro ofertas de emprego: $e');
+            Get.dialog(
+              AlertDialog(
+                title: Text('Erro durante a solicitação'),
+                content: Container(
+                  height: 80,
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        'Ocorreu um erro durante a solicitação. Tente novamente mais tarde',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  FlatButton(
+                    child: Text('OK'),
+                    onPressed: () {
+                      Get.back();
+                    },
+                  )
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     List<Widget> itensCarrossel = [];
@@ -220,6 +271,9 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
     ));
     itensCarrossel.add(Builder(
       builder: (BuildContext context) => containerAchados,
+    ));
+    itensCarrossel.add(Builder(
+      builder: (BuildContext context) => containerContato,
     ));
     return CarouselSlider(
       options: CarouselOptions(

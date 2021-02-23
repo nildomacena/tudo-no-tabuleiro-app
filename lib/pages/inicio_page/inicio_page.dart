@@ -15,6 +15,7 @@ import 'package:tudo_no_tabuleiro_app/pages/achados_perdidos_page/achados_perdid
 import 'package:tudo_no_tabuleiro_app/pages/empregos_page/empregos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/inicio_page/categorias_destaque.dart';
+import 'package:tudo_no_tabuleiro_app/pages/inicio_page/destaques_carousel.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/pages/pre_cadastro_page/pre_cadastro_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
@@ -40,7 +41,7 @@ class InicioPage extends GetWidget<AuthController> {
   }
 }
 
-class DestaquesCarousel extends StatelessWidget {
+/* class DestaquesCarousel extends StatelessWidget {
   List<Estabelecimento> estabelecimentos;
   DestaquesCarousel() {
     estabelecimentos = databaseService.getEstabelecimentosDestaque();
@@ -272,7 +273,7 @@ class DestaquesCarousel extends StatelessWidget {
       ,
     );
   }
-}
+} */
 
 class ListCategoria extends StatelessWidget {
   Map categoriaEstabelecimentos;

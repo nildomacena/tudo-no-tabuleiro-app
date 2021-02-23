@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
 //import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
@@ -271,6 +272,21 @@ class DatabaseService {
     await Future.delayed(Duration(seconds: 1));
     estabelecimentosFinal = estabelecimentos;
     return estabelecimentos;
+  }
+
+  reportarErro(Estabelecimento estabelecimento, String problema) async {
+    await _firestore.collection('reportErros').add({
+      'estabelecimentoId': estabelecimento.id,
+      'estabelecimentoNome': estabelecimento.nome,
+      'timestamp': FieldValue.serverTimestamp(),
+      'problema': problema
+    });
+    Get.snackbar('Feedback enviado',
+        'Já salvamos seu feedback, iremos tentar solucionar da melhor maneira. Obrigado!',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 3),
+        margin: EdgeInsets.only(bottom: 10));
+    return;
   }
 
   getEstabelecimentoPorCategoria(Categoria categoria) {
