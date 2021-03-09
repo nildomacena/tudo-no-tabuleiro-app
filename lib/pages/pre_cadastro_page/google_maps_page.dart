@@ -53,12 +53,12 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
               title: Text('Localização não salva'),
               content: Text('Deseja realmente sair sem a localização?'),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Get.back();
                     },
                     child: Text('CANCELAR')),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Get.back();
                       Get.back();

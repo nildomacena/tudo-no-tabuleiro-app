@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class UtilService {
   File _image;
+  bool jaExibiuToastLogin = false;
   int indexAuxImage; //Variável para incrementar a cada link temporário. Se usar o mesmo link, a imagem continua sempre a mesma
   final picker = ImagePicker();
   Location location = Location();
@@ -62,7 +63,7 @@ class UtilService {
             actions: [
               //Botão "Não exibir mais" para o caso de o usuário já ter visualizado essa mensagem
               if (sharedPreferences.getBool('localizacao_ja_exibida'))
-                FlatButton(
+                TextButton(
                   child: Text('Não exibir mais essa mensagem'),
                   onPressed: () async {
                     await sharedPreferences.setBool(
@@ -72,7 +73,7 @@ class UtilService {
                 ),
               //Botão caso ele não tenha visto essa mensagem
               if (!sharedPreferences.getBool('localizacao_ja_exibida'))
-                FlatButton(
+                TextButton(
                   child: Text('Não, obrigado'),
                   onPressed: () async {
                     await sharedPreferences.setBool(
@@ -80,7 +81,7 @@ class UtilService {
                     Get.back(result: false);
                   },
                 ),
-              FlatButton(
+              TextButton(
                 child: Text('Quero compartilhar'),
                 onPressed: () {
                   Get.back(result: true);
@@ -246,6 +247,32 @@ class UtilService {
     if (await canLaunch(link)) {
       return launch(link);
     }
+  }
+
+  void loadingAlert() {
+    Get.dialog(
+        AlertDialog(
+            content: Container(
+          height: 80,
+          child: Column(
+            children: <Widget>[
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+              ),
+              Text(
+                'Aguarde',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.primaryColor),
+              )
+            ],
+          ),
+        )),
+        barrierDismissible: false);
   }
 }
 

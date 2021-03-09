@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tudo_no_tabuleiro_app/model/sorteio.dart';
-import 'package:tudo_no_tabuleiro_app/pages/sorteios_page/sorteio_card.dart';
+import 'package:tudo_no_tabuleiro_app/pages/sorteios_page/sorteio_card_state.dart'; //Trocado para testar o card sem usar getWidget
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 
 class SorteiosAtivosTab extends StatefulWidget {

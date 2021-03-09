@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:extended_image/extended_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -9,6 +9,7 @@ import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PesquisaPage extends StatelessWidget {
   PesquisaPage();
@@ -143,8 +144,10 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                         color: Colors.black.withOpacity(.4),
                       ),
                       InkWell(
-                        child: ExtendedImage.network(
-                          categoria.imagemUrl,
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          imageUrl: categoria.imagemUrl,
                           fit: BoxFit.cover,
                         ),
                         onTap: () {
@@ -231,7 +234,10 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                             Container(
                               height: 92,
                               width: 92,
-                              child: Image.network(estabelecimento.imagemUrl,
+                              child: CachedNetworkImage(
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  imageUrl: estabelecimento.imagemUrl,
                                   fit: BoxFit.cover),
                             ),
                             Expanded(
@@ -285,7 +291,10 @@ class _ListViewCategoriasState extends State<ListViewCategorias> {
                         maxWidth: 64,
                         maxHeight: 64,
                       ),
-                      child: Image.network(estabelecimento.imagemUrl,
+                      child: CachedNetworkImage(
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          imageUrl: estabelecimento.imagemUrl,
                           fit: BoxFit.cover),
                     ),
                     onTap: () {

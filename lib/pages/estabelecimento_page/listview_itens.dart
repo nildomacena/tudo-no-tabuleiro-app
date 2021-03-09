@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tudo_no_tabuleiro_app/model/produto.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ListViewItens extends StatelessWidget {
   final List<Produto> produtos;
@@ -65,8 +66,9 @@ class TileProduto extends StatelessWidget {
               child: Container(
                 height: double.infinity,
                 color: Colors.grey[200],
-                child: Image.network(
-                    produto.imagem ??
+                child: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: produto.imagem ??
                         'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921',
                     fit: BoxFit.cover),
               ),
@@ -106,7 +108,7 @@ class TileProduto extends StatelessWidget {
                   flex: 1,
                   child: Container(
                     color: Colors.grey[200],
-                    child: Image.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                         produto.imagem ??
                             'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921',
                         fit: BoxFit.cover),

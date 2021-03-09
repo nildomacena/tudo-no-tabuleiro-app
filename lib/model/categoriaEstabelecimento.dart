@@ -20,7 +20,7 @@ class CategoriaEstabelecimento {
     return 'Categoria: ${categoria.nome} - Estabelecimentos: ${estabelecimentos?.length}';
   }
 
-  factory CategoriaEstabelecimento.checkListAndCreateCategoria(
+  /* factory CategoriaEstabelecimento.checkListAndCreateCategoria(
       List<CategoriaEstabelecimento> categoriasEstabelecimentos,
-      estabelecimento) {}
+      estabelecimento); */
 }

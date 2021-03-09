@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -108,7 +109,7 @@ class InicioPage extends GetWidget<AuthController> {
                   ),
                 ),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text('OK'),
                     onPressed: () {
                       Get.back();
@@ -183,7 +184,7 @@ class InicioPage extends GetWidget<AuthController> {
                   ),
                 ),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text('OK'),
                     onPressed: () {
                       Get.back();
@@ -209,7 +210,7 @@ class InicioPage extends GetWidget<AuthController> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  ExtendedImage.network(
+                  CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                     e.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.fill,
                   ),
@@ -250,7 +251,7 @@ class InicioPage extends GetWidget<AuthController> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
+                    CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       e.imagemUrl,
                       fit: BoxFit.fill,
                     ),
@@ -314,7 +315,7 @@ class ListCategoria extends StatelessWidget {
                           ),
                         ),
                         actions: [
-                          FlatButton(
+                          TextButton(
                             child: Text('OK'),
                             onPressed: () {
                               Get.back(result: controller.text);
@@ -402,8 +403,10 @@ class EstabelecimentoCard extends StatelessWidget {
                 child: Hero(
                   tag: estabelecimento.imagemUrl ??
                       databaseService.randomNumber.toString(),
-                  child: ExtendedImage.network(
-                    estabelecimento.imagemUrl ?? databaseService.nophoto,
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl:
+                        estabelecimento.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -425,7 +428,7 @@ class EstabelecimentoCard extends StatelessWidget {
               Container(
                 height: 30,
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
-                child: FlatButton(
+                child: TextButton(
                     child: Row(
                       children: [
                         Icon(FlutterIcons.logo_whatsapp_ion,
@@ -437,7 +440,7 @@ class EstabelecimentoCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    color: Colors.green,
+                    //color: Colors.green,
                     onPressed: () async {
                       ligar = true;
                       await utilService.ligarEstabelecimento(estabelecimento);
@@ -449,7 +452,7 @@ class EstabelecimentoCard extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
                 height: 30,
-                child: FlatButton(
+                child: TextButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -463,7 +466,7 @@ class EstabelecimentoCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    color: Colors.blue,
+                    //color: Colors.blue,
                     onPressed: () async {
                       ligar = true;
                       await utilService.ligarEstabelecimento(estabelecimento);
@@ -497,7 +500,7 @@ class EstabelecimentoCard extends StatelessWidget {
                   child: Hero(
                     tag: estabelecimento.imagemUrl ??
                         databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.cover,
                     ),
@@ -535,7 +538,7 @@ Column(
                   child: Hero(
                     tag: estabelecimento.imagemUrl ??
                         databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.cover,
                     ),
@@ -583,7 +586,7 @@ class EstabelecimentoCard extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.fill,
                     ),

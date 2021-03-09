@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/categoria.dart';
 import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_estabelecimentos_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CategoriasDestaque extends StatelessWidget {
   CategoriasDestaque();
@@ -57,9 +57,11 @@ class CategoriasDestaque extends StatelessWidget {
                               margin: EdgeInsets.only(left: 5, right: 5),
                               child: Column(
                                 children: [
-                                  ExtendedImage.network(
-                                    categoria.icone,
-                                    cache: true,
+                                  CachedNetworkImage(
+                                    placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator()),
+                                    imageUrl: categoria.icone,
+                                    //cache: true,
                                     fit: BoxFit.fill,
                                     height: 60,
                                   ),

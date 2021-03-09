@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:tudo_no_tabuleiro_app/pages/visualizar_imagem_page/visualizar_imagem_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CarrosselImagens extends StatelessWidget {
   final Estabelecimento estabelecimento;
@@ -23,14 +24,18 @@ class CarrosselImagens extends StatelessWidget {
         items: [
           if (estabelecimento.imagem1 != null && estabelecimento.imagem1 != '')
             InkWell(
-              child: Image.network(estabelecimento.imagem1),
+              child: CachedNetworkImage(
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  imageUrl: estabelecimento.imagem1),
               onTap: () {
                 Get.to(VisualizarImagemPage(estabelecimento.imagem1));
               },
             ),
           if (estabelecimento.imagem2 != null && estabelecimento.imagem2 != '')
             InkWell(
-              child: Image.network(estabelecimento.imagem2),
+              child: CachedNetworkImage(
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  imageUrl: estabelecimento.imagem2),
               onTap: () {
                 Get.to(VisualizarImagemPage(estabelecimento.imagem2));
               },
@@ -43,7 +48,7 @@ class CarrosselImagens extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
+                    CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       e.imagemUrl,
                       fit: BoxFit.fill,
                     ),

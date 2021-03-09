@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -98,7 +99,7 @@ class _ListCategoriaState extends State<ListCategoria> {
                           ),
                         ),
                         actions: [
-                          FlatButton(
+                          TextButton(
                             child: Text('OK'),
                             onPressed: () {
                               Get.back(result: controller.text);
@@ -247,8 +248,10 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                 child: Hero(
                   tag: estabelecimento.imagemUrl ??
                       databaseService.randomNumber.toString(),
-                  child: ExtendedImage.network(
-                    estabelecimento.imagemUrl ?? databaseService.nophoto,
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl:
+                        estabelecimento.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -275,7 +278,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
               Container(
                 height: 30,
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
-                child: FlatButton(
+                child: TextButton(
                     child: Row(
                       children: [
                         Icon(FlutterIcons.logo_whatsapp_ion,
@@ -287,7 +290,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                         ),
                       ],
                     ),
-                    color: Colors.green,
+                    //color: Colors.green,
                     onPressed: () async {
                       ligar = true;
                       await utilService.ligarEstabelecimento(estabelecimento);
@@ -298,7 +301,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
               Container(
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
                 height: 30,
-                child: FlatButton(
+                child: TextButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -312,7 +315,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                         ),
                       ],
                     ),
-                    color: Colors.blue,
+                    //color: Colors.blue,
                     onPressed: () async {
                       ligar = true;
                       await utilService.ligarEstabelecimento(estabelecimento);
@@ -346,7 +349,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                   child: Hero(
                     tag: estabelecimento.imagemUrl ??
                         databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.cover,
                     ),
@@ -384,7 +387,7 @@ Column(
                   child: Hero(
                     tag: estabelecimento.imagemUrl ??
                         databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.cover,
                     ),
@@ -432,7 +435,7 @@ class EstabelecimentoCard extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.fill,
                     ),

@@ -19,6 +19,8 @@ import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento
 class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   //final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   List<Estabelecimento> estabelecimentosFinal = List();
   List<Categoria> categoriasFinal = List();
@@ -34,7 +36,7 @@ class DatabaseService {
     }
   }
 
-  DatabaseService() {}
+  DatabaseService();
   Future<void> checkUserBDInfo(User user) async {
     QuerySnapshot snapshot = await _firestore
         .collection('users')
@@ -56,6 +58,14 @@ class DatabaseService {
     estabelecimentosFinal = await getEstabelecimentos();
     categoriasFinal = await getCategorias();
     return;
+  }
+
+  Future<User> getUser() async {
+    User user;
+    await Future.delayed(Duration(seconds: 1), () {
+      user = _auth.currentUser;
+    });
+    return user;
   }
 
   /// CATEGORIAS */
@@ -161,11 +171,11 @@ class DatabaseService {
       ref = await _firestore
           .collection('categorias')
           .add({'ativo': true, 'imagemUrl': '', 'nome': nome});
-      StorageTaskSnapshot taskSnapshot = await storage
+      TaskSnapshot taskSnapshot = await storage
           .ref()
           .child('estabelecimentos-temporarios/$nome')
           .putFile(imagem)
-          .onComplete;
+          .snapshot;
       return ref.update({'imagemUrl': await taskSnapshot.ref.getDownloadURL()});
     } catch (e) {
       await ref.delete();
@@ -181,7 +191,7 @@ class DatabaseService {
     return possuiEstabelecimento;
   }
 
-  /**SORTEIOS */
+  /// SORTEIOS */
 
   Stream<List<Sorteio>> getSorteiosRealizados() {
     return _firestore
@@ -232,7 +242,7 @@ class DatabaseService {
     //return _firebaseMessaging.subscribeToTopic('${sorteio.id}_${_user.uid}');
   }
 
-  /**ESTABELECIMENTOS */
+  /// ESTABELECIMENTOS */
 
   bool get estabelecimentosCarregados =>
       estabelecimentosFinal != null && estabelecimentosFinal.isNotEmpty;
@@ -316,11 +326,11 @@ class DatabaseService {
       Categoria categoria,
       bool telefonePrimarioWhatsapp,
       File imagem) async {
-    StorageTaskSnapshot taskSnapshot = await storage
+    TaskSnapshot taskSnapshot = await storage
         .ref()
         .child('estabelecimentos-temporarios/$nome')
         .putFile(imagem)
-        .onComplete;
+        .snapshot;
 
     await _firestore.collection('estabelecimentos').add({
       'ativo': true,
@@ -342,7 +352,7 @@ class DatabaseService {
     return carregarEstabelecimentos();
   }
 
-  /**EMPREGOS E ACHADOS E PERDIDOS */
+  /// EMPREGOS E ACHADOS E PERDIDOS */
 
   Future<List<OfertaEmprego>> getOfertasEmprego() async {
     QuerySnapshot querySnapshot =

@@ -17,14 +17,14 @@ class PushNotificationService {
         ),
         content: Text(data['notification']['body']),
         actions: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Get.offAll(HomePage(/*  */
                   selectedTab: 2,
                 ));
               },
               child: Text('IR PARA SORTEIOS')),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Get.back();
               },

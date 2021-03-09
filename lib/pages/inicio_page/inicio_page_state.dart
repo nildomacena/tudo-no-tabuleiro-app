@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:extended_image/extended_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -15,6 +15,7 @@ import 'package:tudo_no_tabuleiro_app/pages/lista_estabelecimentos_page/lista_es
 import 'package:tudo_no_tabuleiro_app/pages/pre_cadastro_page/pre_cadastro_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class InicioPage extends StatefulWidget {
   @override
@@ -177,7 +178,7 @@ class _ListCategoriaState extends State<ListCategoria> {
                 categoriaEstabelecimentos.keys.toList()[index]];
             return Container(
               margin: EdgeInsets.only(top: 20),
-              height: 270,
+              height: 280,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -194,7 +195,7 @@ class _ListCategoriaState extends State<ListCategoria> {
                           ),
                         ),
                         actions: [
-                          FlatButton(
+                          TextButton(
                             child: Text('OK'),
                             onPressed: () {
                               Get.back(result: controller.text);
@@ -239,6 +240,24 @@ class _ListCategoriaState extends State<ListCategoria> {
                       ),
                     ),
                   ),
+                  /** ESSA EXIBE 5 ESTABELECIMENTOS CADASTRADOS NAQUELA CATEGORIA */
+                  Expanded(
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: mapCategoria['estabelecimentos'].length > 5
+                          ? 5
+                          : mapCategoria['estabelecimentos'].length,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (mapCategoria['estabelecimentos'][index] != null)
+                          return EstabelecimentoCard(
+                              mapCategoria['estabelecimentos'][index],
+                              widget.locationData);
+                        return Container();
+                      },
+                    ),
+                  ),
+                  /*  
+                  ESSA EXIBE TODOS OS ESTABELECIMENTOS CADASTRADOS NAQUELA CATEGORIA
                   Expanded(
                     child: ListView(
                       scrollDirection: Axis.horizontal,
@@ -247,7 +266,7 @@ class _ListCategoriaState extends State<ListCategoria> {
                               EstabelecimentoCard(e, widget.locationData))
                           .toList(),
                     ),
-                  ),
+                  ), */
                   Divider()
                 ],
               ),
@@ -288,10 +307,143 @@ class _ListCategoriaState extends State<ListCategoria> {
   }
 }
 
-class EstabelecimentoCard extends GetWidget<AuthController> {
+class EstabelecimentoCard extends StatefulWidget {
   final Estabelecimento estabelecimento;
   final LocationData locationData;
   EstabelecimentoCard(this.estabelecimento, this.locationData);
+
+  @override
+  _EstabelecimentoCardState createState() => _EstabelecimentoCardState();
+}
+
+class _EstabelecimentoCardState extends State<EstabelecimentoCard> {
+  bool ligar = false;
+  String distancia;
+  @override
+  Widget build(BuildContext context) {
+    if (widget.locationData != null)
+      distancia = utilService.calcDistancia(
+          widget.estabelecimento, widget.locationData);
+    return Container(
+      height: 280,
+      width: 140,
+      margin: EdgeInsets.only(left: 5, right: 5),
+      padding: EdgeInsets.only(bottom: 15),
+      child: InkWell(
+        onTap: () {
+          if (!ligar) Get.to(EstabelecimentoPage(widget.estabelecimento));
+        },
+        child: Card(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Container(
+              height: 70,
+              width: 70,
+              margin: EdgeInsets.only(top: 10),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Hero(
+                  tag: widget.estabelecimento.imagemUrl ??
+                      databaseService.randomNumber.toString(),
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: widget.estabelecimento.imagemUrl ??
+                        databaseService.nophoto,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                  margin: EdgeInsets.only(top: 5),
+                  padding: EdgeInsets.only(left: 3, right: 3),
+                  child: AutoSizeText(
+                    widget.estabelecimento.nome,
+                    maxLines: 2,
+                    wrapWords: false,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15),
+                  )),
+            ),
+            if (distancia != null)
+              Container(
+                  height: 40,
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.location_on, color: Colors.red, size: 20),
+                      Text('$distancia km'),
+                    ],
+                  )),
+            if (widget.estabelecimento.telefonePrimarioWhatsapp)
+              Container(
+                height: 40,
+                margin: EdgeInsets.only(bottom: 10),
+                color: Colors.green,
+                child: TextButton.icon(
+                    icon: Icon(FlutterIcons.logo_whatsapp_ion,
+                        color: Colors.white),
+                    label: Text(
+                      'WHATSAPP',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    /*  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: double.infinity,
+                          color: Colors.red,
+                          child: Icon(FlutterIcons.logo_whatsapp_ion,
+                              color: Colors.white, size: 20),
+                        ),
+                        Expanded(child: Container()),
+                        Text(
+                          'WHATSAPP',
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ],
+                    ), */
+                    onPressed: () async {
+                      ligar = true;
+                      await utilService
+                          .ligarEstabelecimento(widget.estabelecimento);
+                      ligar = false;
+                    }),
+              ),
+            if (!widget.estabelecimento.telefonePrimarioWhatsapp)
+              Container(
+                margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
+                width: double.infinity,
+                height: 40,
+                color: Colors.blue,
+                child: TextButton.icon(
+                    icon: Icon(Icons.phone, color: Colors.white),
+                    label: Text(
+                      'LIGAR',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    /* color: Colors.blue, */
+                    onPressed: () async {
+                      ligar = true;
+                      await utilService
+                          .ligarEstabelecimento(widget.estabelecimento);
+                      ligar = false;
+                      print('ligar');
+                    }),
+              ),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+class EstabelecimentoCardLocation extends GetWidget<AuthController> {
+  final Estabelecimento estabelecimento;
+  final LocationData locationData;
+  EstabelecimentoCardLocation(this.estabelecimento, this.locationData);
   bool ligar = false;
   @override
   Widget build(BuildContext context) {
@@ -348,8 +500,10 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                 child: Hero(
                   tag: estabelecimento.imagemUrl ??
                       databaseService.randomNumber.toString(),
-                  child: ExtendedImage.network(
-                    estabelecimento.imagemUrl ?? databaseService.nophoto,
+                  child: CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl:
+                        estabelecimento.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -389,7 +543,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
               Container(
                 height: 30,
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
-                child: FlatButton(
+                child: TextButton(
                     child: Row(
                       children: [
                         Icon(FlutterIcons.logo_whatsapp_ion,
@@ -401,7 +555,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                         ),
                       ],
                     ),
-                    color: Colors.green,
+                    /* color: Colors.green, */
                     onPressed: () async {
                       ligar = true;
                       await utilService.ligarEstabelecimento(estabelecimento);
@@ -412,7 +566,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
               Container(
                 margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
                 height: 30,
-                child: FlatButton(
+                child: TextButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -426,7 +580,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                         ),
                       ],
                     ),
-                    color: Colors.blue,
+                    //color: Colors.blue,
                     onPressed: () async {
                       ligar = true;
                       await utilService.ligarEstabelecimento(estabelecimento);
@@ -460,7 +614,7 @@ class EstabelecimentoCard extends GetWidget<AuthController> {
                   child: Hero(
                     tag: estabelecimento.imagemUrl ??
                         databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.cover,
                     ),
@@ -498,7 +652,7 @@ Column(
                   child: Hero(
                     tag: estabelecimento.imagemUrl ??
                         databaseService.randomNumber.toString(),
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.cover,
                     ),
@@ -546,7 +700,7 @@ class EstabelecimentoCard extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: double.infinity,
-                    child: ExtendedImage.network(
+                    child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       estabelecimento.imagemUrl ?? databaseService.nophoto,
                       fit: BoxFit.fill,
                     ),

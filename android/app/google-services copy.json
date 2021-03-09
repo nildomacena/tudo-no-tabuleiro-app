@@ -15,27 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "374168288805-4io7fc0l6ffj5hhhno55st8jj5mu0mp6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro",
-            "certificate_hash": "dc9d978c41ecd1e89d1616fa0040c0928cb7650c"
-          }
-        },
-        {
           "client_id": "374168288805-a15cgfg1nburqd7ubo62k6ou9j49g5pr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "br.com.hagiosdev.tudo_no_tabuleiro",
             "certificate_hash": "29fcfb3e0131f700d3d65ede779f7ddf8195cac2"
-          }
-        },
-        {
-          "client_id": "374168288805-mp5hq0v2cf4pgnirkeme2ec5qpkrog9q.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro",
-            "certificate_hash": "f3992bd9a42fb1dfa1293502672d24b514484aee"
           }
         },
         {
@@ -68,27 +52,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "374168288805-d3j495na97j0ar6m6pklv5kf89sdqn51.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
-            "certificate_hash": "dc9d978c41ecd1e89d1616fa0040c0928cb7650c"
-          }
-        },
-        {
           "client_id": "374168288805-rbcj6ed31u6oeq6a0qcvhpm5egk11i8k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
             "certificate_hash": "29fcfb3e0131f700d3d65ede779f7ddf8195cac2"
-          }
-        },
-        {
-          "client_id": "374168288805-u69vm1qgtesnhp9sjef8es9r1j71bcdu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
-            "certificate_hash": "f3992bd9a42fb1dfa1293502672d24b514484aee"
           }
         },
         {

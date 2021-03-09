@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -48,7 +49,7 @@ class EstabelecimentoCard extends StatelessWidget {
           estabelecimento.telefonePrimarioWhatsapp)
         return Container(
           margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
-          child: FlatButton(
+          child: TextButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -64,7 +65,7 @@ class EstabelecimentoCard extends StatelessWidget {
                   ),
                 ],
               ),
-              color: Colors.green,
+              //color: Colors.green,
               onPressed: () async {
                 ligar = true;
                 await utilService.ligarEstabelecimento(estabelecimento);
@@ -76,7 +77,7 @@ class EstabelecimentoCard extends StatelessWidget {
           !estabelecimento.telefonePrimarioWhatsapp)
         return Container(
           margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
-          child: FlatButton(
+          child: TextButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -90,7 +91,7 @@ class EstabelecimentoCard extends StatelessWidget {
                   ),
                 ],
               ),
-              color: Colors.blue,
+              //color: Colors.blue,
               onPressed: () async {
                 ligar = true;
                 await utilService.ligarEstabelecimento(estabelecimento);
@@ -105,7 +106,7 @@ class EstabelecimentoCard extends StatelessWidget {
       if (estabelecimento.possuiLocalizacao)
         return Container(
           margin: EdgeInsets.only(left: 7, right: 7, bottom: 10),
-          child: FlatButton(
+          child: TextButton(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -122,7 +123,7 @@ class EstabelecimentoCard extends StatelessWidget {
                   ),
                 ],
               ),
-              color: Colors.red,
+              //color: Colors.red,
               onPressed: () async {
                 ligar = true;
                 await utilService.abrirLocalizacao(estabelecimento);
@@ -152,8 +153,10 @@ class EstabelecimentoCard extends StatelessWidget {
                     child: Hero(
                       tag: estabelecimento.imagemUrl ??
                           databaseService.randomNumber.toString(),
-                      child: ExtendedImage.network(
-                          estabelecimento.imagemUrl ??
+                      child: CachedNetworkImage(
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          imageUrl: estabelecimento.imagemUrl ??
                               'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921',
                           fit: BoxFit.cover),
                     ),
@@ -166,7 +169,7 @@ class EstabelecimentoCard extends StatelessWidget {
                     Container(
                       width: Get.width * .6,
                       margin: EdgeInsets.only(right: 50),
-                      height: 20  ,
+                      height: 20,
                       child: AutoSizeText(estabelecimento.nome,
                           maxLines: 1,
                           style: TextStyle(

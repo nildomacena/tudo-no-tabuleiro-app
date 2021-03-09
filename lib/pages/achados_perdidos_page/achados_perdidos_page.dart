@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -49,7 +50,8 @@ class AchadosPerdidosPage extends StatelessWidget {
                               ],
                             )),
                         onPressed: () {
-                          utilService.contatoAdmin('Olá, gostaria de reportar um achado ou perdido');
+                          utilService.contatoAdmin(
+                              'Olá, gostaria de reportar um achado ou perdido');
                         }),
                   )
                 ],
@@ -99,14 +101,19 @@ class AchadosPerdidosPage extends StatelessWidget {
                                     Get.to(VisualizarImagemPage(achado.imagem));
                                   },
                                   child: Container(
-                                    height: 115,
-                                    width: double.infinity,
-                                    margin: EdgeInsets.only(bottom: 15),
-                                    child: Image.network(
+                                      height: 115,
+                                      width: double.infinity,
+                                      margin: EdgeInsets.only(bottom: 15),
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        imageUrl: achado.imagem,
+                                        fit: BoxFit.cover,
+                                      ) /* CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                                       achado.imagem,
                                       fit: BoxFit.cover,
-                                    ),
-                                  ),
+                                    ), */
+                                      ),
                                 ),
                               Container(
                                 child: Text(

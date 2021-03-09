@@ -15,7 +15,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  AwesomeNotifications().initialize('resource://drawable/app_icon', [
+  /*  AwesomeNotifications().initialize('resource://drawable/app_icon', [
     NotificationChannel(
         channelKey: 'basic_channel',
         channelName: 'Basic notifications',
@@ -23,26 +23,41 @@ void main() async {
         defaultColor: Color(0xFF9D50DD),
         ledColor: Colors.white)
   ]);
+  AwesomeNotifications().actionStream.listen((receivedNotification) {
+    print('receivedNotification $receivedNotification');
+  });
+  AwesomeNotifications().displayedStream.listen((receivedNotification) {
+    print('receivedNotification displayed stream $receivedNotification');
+  }); */
   await Firebase.initializeApp();
-  //await databaseService.carregarCategoriasEEstabelecimentos();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   int selectedTab;
   bool backgroundMessage = false;
   String estabelecimentoIdNotificacao;
   MyApp() {
     _firebaseMessaging.subscribeToTopic('sorteio');
-    _firebaseMessaging.configure(
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+    /* _firebaseMessaging.configure(
         //onBackgroundMessage: myBackgroundMessageHandler,
+        // ignore: missing_return
         onLaunch: (data) {
       print('onLaunch  $data');
       if (data['data']['tipo'] == 'sorteio')
         selectedTab = 2;
       else if (data['data']['key'] != null)
         estabelecimentoIdNotificacao = data['data']['key'];
+      // ignore: missing_return
     }, onMessage: (data) {
       print('onMessage $data');
       if (data['data']['tipo'] == 'sorteio')
@@ -52,14 +67,14 @@ class MyApp extends StatelessWidget {
           ),
           content: Text(data['notification']['body']),
           actions: [
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   Get.offAll(HomePage(
                     selectedTab: 2,
                   ));
                 },
                 child: Text('IR PARA SORTEIOS')),
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   Get.back();
                 },
@@ -74,13 +89,13 @@ class MyApp extends StatelessWidget {
           content: Text(data['notification']['body']),
           actions: [
             if (data['data']['key'] != null)
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Get.to(EstabelecimentoPage(databaseService
                         .estabelecimentoById(data['data']['key'])));
                   },
                   child: Text('CONFIRA')),
-            FlatButton(
+            TextButton(
                 onPressed: () {
                   Get.back();
                 },
@@ -88,9 +103,10 @@ class MyApp extends StatelessWidget {
           ],
         ));
       }
+      // ignore: missing_return
     }, onResume: (data) {
       print('Resume $data');
-    });
+    }); */
   }
 
   static onBackGroundMessage() {
@@ -99,12 +115,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AwesomeNotifications().actionStream.listen((receivedNotification) {
-      print('receivedNotification $receivedNotification');
-    });
-    AwesomeNotifications().displayedStream.listen((receivedNotification) {
-      print('receivedNotification displayed stream $receivedNotification');
-    });
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: AuthBinding(),

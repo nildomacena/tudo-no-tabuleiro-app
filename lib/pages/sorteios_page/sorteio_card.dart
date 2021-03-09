@@ -1,6 +1,9 @@
-import 'package:extended_image/extended_image.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/controllers/auth_controller.dart';
@@ -28,10 +31,11 @@ class SorteioCard extends GetWidget<AuthController> {
       child: Column(
         children: <Widget>[
           Container(
-            height: 170,
+            height: 190,
             width: double.infinity,
-            child: ExtendedImage.network(
-              sorteio.imagem ??
+            child: CachedNetworkImage(
+              placeholder: (context, url) => CircularProgressIndicator(),
+              imageUrl: sorteio.imagem ??
                   'https://st3.depositphotos.com/1518767/15994/i/1600/depositphotos_159945820-stock-photo-hamburger-with-french-fries.jpg',
               fit: BoxFit.cover,
             ),
@@ -78,125 +82,178 @@ class SorteioCard extends GetWidget<AuthController> {
                 ),
                 if (sorteio.pendente)
                   Expanded(
-                    child: RaisedButton(
-                      child: Text(
-                          sorteio.participantes.contains(controller.user?.uid)
-                              ? 'Já inscrito'
-                              : 'Participar',
-                          style: TextStyle(color: Colors.white)),
-                      color: _primaryColor,
-                      onPressed: controller.user != null &&
-                              sorteio.participantes.contains(controller.user
-                                  .uid) //Verifica se o usuário já está inscrito no sorteio
-                          ? null
-                          : () async {
-                              bool fezLogin = false;
-                              print('_Currentuser função $controller.user');
-                              if (controller.user == null) {
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: new Text(
-                                          "Faça o login com o Google para concorrer"),
-                                      content: new Text(sorteio.instrucoes),
-                                      actions: <Widget>[
-                                        new FlatButton(
-                                          child: new Text(
-                                              "CLIQUE AQUI PRA FAZER LOGIN"),
-                                          onPressed: () async {
-                                            await controller.login();
+                    child: Container(
+                      color: Colors.white,
+                      child: Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: RaisedButton(
+                                child: Text(
+                                    sorteio.participantes
+                                            .contains(controller.user?.uid)
+                                        ? 'Já inscrito        '
+                                        : 'Participar',
+                                    style: TextStyle(color: Colors.white)),
+                                color: _primaryColor,
+                                onPressed: controller.user != null &&
+                                        sorteio.participantes.contains(controller
+                                            .user
+                                            .uid) //Verifica se o usuário já está inscrito no sorteio
+                                    ? null
+                                    : () async {
+                                        bool fezLogin = false;
+                                        print(
+                                            '_Currentuser função $controller.user');
+                                        if (controller.user == null) {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: new Text(
+                                                    "Faça o login com o Google para concorrer"),
+                                                content: new Text(
+                                                    sorteio.instrucoes),
+                                                actions: <Widget>[
+                                                  new TextButton(
+                                                    child: new Text(
+                                                        "CLIQUE AQUI PRA FAZER LOGIN"),
+                                                    onPressed: () async {
+                                                      await controller.login();
+                                                      print(
+                                                          'controller.user: ${controller.user}');
+                                                      _launchURL(sorteio.link);
+                                                      fezLogin = controller
+                                                              .user !=
+                                                          null; // Verifica se o login foi feito com sucesso
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "Você está logado como ${controller.user.email}"),
+                                                content:
+                                                    Text(sorteio.instrucoes),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: Text("Fazer Logoff"),
+                                                    onPressed: () async {
+                                                      controller.signOut();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: Text(
+                                                        "Ir para o Instagram"),
+                                                    onPressed: () async {
+                                                      await _launchURL(
+                                                          sorteio.link);
+                                                      print('Launch');
+                                                      fezLogin = true;
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
+                                        if (fezLogin) {
+                                          Future.delayed(Duration(seconds: 2));
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text(
+                                                    "Você cumpriu os requisitos para participar do sorteio?"),
+                                                content: Text(
+                                                    'Lembre-se que é necessário compartilhar em suas redes sociais para concorrer ao sorteio. Você fez isso?'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: Text("Não"),
+                                                    onPressed: () async {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Clique de novo em Participar, e cumpra todos os requisitos para participar do sorteio",
+                                                          toastLength:
+                                                              Toast.LENGTH_LONG,
+                                                          gravity: ToastGravity
+                                                              .BOTTOM,
+                                                          backgroundColor:
+                                                              Colors.black,
+                                                          textColor:
+                                                              Colors.white,
+                                                          fontSize: 16.0);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: Text(
+                                                        "Já cumpri todos os passos"),
+                                                    onPressed: () async {
+                                                      await databaseService
+                                                          .inscreverSorteio(
+                                                              sorteio);
+                                                      print('Launch');
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Parabéns! Você está concorrendo ao ${sorteio.titulo}",
+                                                          toastLength:
+                                                              Toast.LENGTH_LONG,
+                                                          gravity: ToastGravity
+                                                              .BOTTOM,
+                                                          backgroundColor:
+                                                              Colors.black,
+                                                          textColor:
+                                                              Colors.white,
+                                                          fontSize: 16.0);
 
-                                            _launchURL(sorteio.link);
-                                            fezLogin = controller.user !=
-                                                null; // Verifica se o login foi feito com sucesso
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else {
-                                await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          "Você está logado como ${controller.user.email}"),
-                                      content: Text(sorteio.instrucoes),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text("Fazer Logoff"),
-                                          onPressed: () async {
-                                            controller.signOut();
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        FlatButton(
-                                          child: Text("Ir para o Instagram"),
-                                          onPressed: () async {
-                                            await _launchURL(sorteio.link);
-                                            print('Launch');
-                                            fezLogin = true;
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                              if (fezLogin) {
-                                Future.delayed(Duration(seconds: 2));
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          "Você cumpriu os requisitos para participar do sorteio?"),
-                                      content: Text(
-                                          'Lembre-se que é necessário compartilhar em suas redes sociais para concorrer ao sorteio. Você fez isso?'),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: Text("Não"),
-                                          onPressed: () async {
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    "Clique de novo em Participar, e cumpra todos os requisitos para participar do sorteio",
-                                                toastLength: Toast.LENGTH_LONG,
-                                                gravity: ToastGravity.BOTTOM,
-                                                backgroundColor: Colors.black,
-                                                textColor: Colors.white,
-                                                fontSize: 16.0);
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        FlatButton(
-                                          child:
-                                              Text("Já cumpri todos os passos"),
-                                          onPressed: () async {
-                                            await databaseService
-                                                .inscreverSorteio(sorteio);
-                                            print('Launch');
-                                            Fluttertoast.showToast(
-                                                msg:
-                                                    "Parabéns! Você está concorrendo ao ${sorteio.titulo}",
-                                                toastLength: Toast.LENGTH_LONG,
-                                                gravity: ToastGravity.BOTTOM,
-                                                backgroundColor: Colors.black,
-                                                textColor: Colors.white,
-                                                fontSize: 16.0);
-
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            },
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        }
+                                      },
+                              ),
+                            ),
+                            Container(
+                              // width: double.infinity,
+                              child: TextButton.icon(
+                                //color: Colors.pink,
+                                label: AutoSizeText(
+                                  'Post Oficial',
+                                  style: TextStyle(color: Colors.white),
+                                  maxLines: 1,
+                                ),
+                                icon: Icon(
+                                  Zocial.instagram,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                                onPressed: () {},
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 Padding(
@@ -222,7 +279,7 @@ class SorteioCard extends GetWidget<AuthController> {
                           fontSize: 15),
                     ),
                   ),
-                  FlatButton(onPressed: () {}, child: Text('SAIBA MAIS'))
+                  TextButton(onPressed: () {}, child: Text('SAIBA MAIS'))
                 ],
               ),
             )

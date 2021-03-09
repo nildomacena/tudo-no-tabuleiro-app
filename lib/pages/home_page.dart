@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
           'Confira o cardápio pra completar seu pedido',
           backgroundColor: Colors.black,
           colorText: Colors.white,
-          mainButton: FlatButton(
+          mainButton: TextButton(
               onPressed: () {},
               child: Text(
                 'CARRINHO',

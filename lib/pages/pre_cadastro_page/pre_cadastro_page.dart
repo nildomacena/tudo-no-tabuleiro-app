@@ -95,13 +95,13 @@ class _PreCadastroPageState extends State<PreCadastroPage> {
       title: Text('Estabelecimento Cadastrado'),
       content: Text('Deseja cadastrar um novo estabelecimento?'),
       actions: [
-        FlatButton(
+        TextButton(
           child: Text('NÃO'),
           onPressed: () {
             Get.back(result: false);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text('SIM'),
           onPressed: () {
             Get.back(result: true);
@@ -293,13 +293,13 @@ class _PreCadastroPageState extends State<PreCadastroPage> {
                 title: Text('GPS desligado'),
                 content: Text('Deseja continuar?'),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text('Sim'),
                     onPressed: () {
                       Get.back(result: true);
                     },
                   ),
-                  FlatButton(
+                  TextButton(
                     child: Text('Não'),
                     onPressed: () {
                       Get.back(result: false);

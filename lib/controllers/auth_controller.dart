@@ -27,8 +27,8 @@ class AuthController extends GetxController {
   void onInit() {
     print('onInit');
     location.getLocation();
-   /*  _firebaseUser.bindStream(_auth.authStateChanges());
-    _locationData.bindStream(location.onLocationChanged);
+    _firebaseUser.bindStream(_auth.authStateChanges());
+    /* _locationData.bindStream(location.onLocationChanged);
     _locationData.listen((location) {
       print('location no authcontroller: $location');
     });
@@ -37,7 +37,7 @@ class AuthController extends GetxController {
     // initializeFCM();
   }
 
-   @override
+  @override
   void onReady() {
     super.onReady();
     print("onReady()");
@@ -61,7 +61,7 @@ class AuthController extends GetxController {
     }
 
     locationDataAsync = await location.getLocation();
-    print('locationData AuthController: $locationData');
+    //print('locationData AuthController: $locationData');
     update();
   }
 
@@ -76,14 +76,14 @@ class AuthController extends GetxController {
         ),
         content: Text(data['notification']['body']),
         actions: [
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Get.offAll(HomePage(
                   selectedTab: 2,
                 ));
               },
               child: Text('IR PARA SORTEIOS')),
-          FlatButton(
+          TextButton(
               onPressed: () {
                 Get.back();
               },

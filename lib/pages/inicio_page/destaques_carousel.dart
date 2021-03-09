@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tudo_no_tabuleiro_app/model/achado.dart';
@@ -95,7 +96,7 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
                   ),
                 ),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text('OK'),
                     onPressed: () {
                       Get.back();
@@ -170,7 +171,7 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
                   ),
                 ),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text('OK'),
                     onPressed: () {
                       Get.back();
@@ -220,7 +221,7 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
                   ),
                 ),
                 actions: [
-                  FlatButton(
+                  TextButton(
                     child: Text('OK'),
                     onPressed: () {
                       Get.back();
@@ -246,8 +247,9 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  ExtendedImage.network(
-                    e.imagemUrl ?? databaseService.nophoto,
+                  CachedNetworkImage(
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    imageUrl: e.imagemUrl ?? databaseService.nophoto,
                     fit: BoxFit.fill,
                   ),
                   Positioned.fill(
@@ -290,7 +292,7 @@ class _DestaquesCarouselState extends State<DestaquesCarousel> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network(
+                    CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                       e.imagemUrl,
                       fit: BoxFit.fill,
                     ),

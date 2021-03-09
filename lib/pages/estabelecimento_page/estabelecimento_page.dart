@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:get/get.dart';
@@ -61,11 +62,11 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
       return Container(
           height: appBar.preferredSize.height,
           width: Get.width,
-          decoration: BoxDecoration(
+          /* decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
             Colors.black38.withOpacity(.5),
             Colors.grey[300].withOpacity(.2)
-          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)), */
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 5),
           child: Row(
@@ -95,13 +96,13 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                                   'Nos conte o problema que você encontrou.'),
                         ),
                         actions: [
-                          FlatButton(
+                          TextButton(
                             child: Text('CANCELAR'),
                             onPressed: () {
                               Get.back(result: null);
                             },
                           ),
-                          FlatButton(
+                          TextButton(
                             child: Text('ENVIAR'),
                             onPressed: () {
                               Get.back(result: controller.text);
@@ -159,11 +160,13 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                     Hero(
                       tag: widget.estabelecimento.imagemUrl ??
                           databaseService.randomNumber.toString(),
-                      child: ExtendedImage.network(
-                        widget.estabelecimento.imagemUrl ??
+                      child: CachedNetworkImage(
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        imageUrl: widget.estabelecimento.imagemUrl ??
                             databaseService.nophoto,
                         fit: BoxFit.fill,
-                        cache: true,
+                        /* cache: true, */
                       ),
                     ),
                     Positioned(top: 0, child: customAppbar())
@@ -187,7 +190,7 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                         )) */
                   ],
                 )
-                /* Image.network(
+                /* CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:
                   widget.estabelecimento.imagemUrl ?? databaseService.nophoto,
                   fit: BoxFit.cover), */
                 ),
@@ -225,7 +228,10 @@ class _EstabelecimentoPageState extends State<EstabelecimentoPage> {
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
-                          Image.network(widget.estabelecimento.imagemUrl,
+                          CachedNetworkImage(
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                              imageUrl: widget.estabelecimento.imagemUrl,
                               fit: BoxFit.cover),
                           Positioned(
                             top: 20,
@@ -314,7 +320,7 @@ class ContainerInfoGerais extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: Center(
-                  child: FlatButton(
+                  child: TextButton(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -384,7 +390,7 @@ class ContainerInfoGerais extends StatelessWidget {
                           /* if (estabelecimento.localizacao != null)
                             Container(
                                 width: 137,
-                                child: FlatButton(
+                                child: TextButton(
                                     onPressed: () async {
                                       final availableMaps =
                                           await MapLauncher.installedMaps;
@@ -442,7 +448,7 @@ class ContainerInfoGerais extends StatelessWidget {
                           ),
                           /* Container(
                               width: 137,
-                              child: FlatButton(
+                              child: TextButton(
                                   onPressed: () async {
                                     if (estabelecimento
                                                 .telefonePrimarioWhatsapp ==
@@ -572,7 +578,7 @@ class ListViewItens extends StatelessWidget {
                             flex: 1,
                             child: Container(
                               color: Colors.grey[200],
-                              child: Image.network(itemCardapio.imagemUrl,
+                              child: CachedNetworkImage(placeholder: (context, url) => CircularProgressIndicator(),imageUrl:itemCardapio.imagemUrl,
                                   fit: BoxFit.cover),
                             ),
                           )
