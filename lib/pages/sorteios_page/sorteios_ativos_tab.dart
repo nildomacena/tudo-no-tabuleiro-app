@@ -40,7 +40,7 @@ class _SorteiosAtivosTabState extends State<SorteiosAtivosTab> {
                     padding: EdgeInsets.all(3),
                   ),
                   Text(
-                    'Para participar é simples: Basta clicar no botão Participar, fazer o login com sua conta do Google e compartilhar nas suas redes sociais de acordo com as regras de cada sorteio. E pronto! Você já está concorrendo!',
+                    'Para participar é simples: Basta clicar no botão Participar, fazer o login com sua conta do Google e cumprir as regras no post oficial do Instagram. E pronto! Você já está concorrendo!',
                     style: TextStyle(
                       fontSize: 19,
                     ),

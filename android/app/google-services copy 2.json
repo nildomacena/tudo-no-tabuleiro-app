@@ -31,14 +31,6 @@
           }
         },
         {
-          "client_id": "374168288805-lj95be2jnd92auuh2l4fsb6tvr3c85s0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro",
-            "certificate_hash": "edc1910df744f9ff0d744895439c78302255dce9"
-          }
-        },
-        {
           "client_id": "374168288805-mp5hq0v2cf4pgnirkeme2ec5qpkrog9q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -76,14 +68,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "374168288805-1d9k6uqnobnk5fgfjels5qfnmlkooc4c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
-            "certificate_hash": "7ff96d9f421df672f1402a30d532fbe55b0d2100"
-          }
-        },
-        {
           "client_id": "374168288805-d3j495na97j0ar6m6pklv5kf89sdqn51.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -92,27 +76,11 @@
           }
         },
         {
-          "client_id": "374168288805-fqs2cpggdkfn7716oblqeql32sibb38c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
-            "certificate_hash": "80e4eccecca3e9060a938875f4405114b40aeadd"
-          }
-        },
-        {
           "client_id": "374168288805-rbcj6ed31u6oeq6a0qcvhpm5egk11i8k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
             "certificate_hash": "29fcfb3e0131f700d3d65ede779f7ddf8195cac2"
-          }
-        },
-        {
-          "client_id": "374168288805-tt2pvah9rvqqfel4nnfqi4b674hu6h1j.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
-            "certificate_hash": "edc1910df744f9ff0d744895439c78302255dce9"
           }
         },
         {

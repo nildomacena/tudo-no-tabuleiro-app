@@ -76,14 +76,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "374168288805-1d9k6uqnobnk5fgfjels5qfnmlkooc4c.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.hagiosdev.tudo_no_tabuleiro_app",
-            "certificate_hash": "7ff96d9f421df672f1402a30d532fbe55b0d2100"
-          }
-        },
-        {
           "client_id": "374168288805-d3j495na97j0ar6m6pklv5kf89sdqn51.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

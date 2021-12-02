@@ -76,8 +76,9 @@ class _InicioPageState extends State<InicioPage> {
     _locationData = await location.getLocation();
     utilService.locationData = _locationData;
     print('_locationData: 22 $_locationData');
+    Future.delayed(Duration(seconds: 1));
     setState(() {});
-    /* 
+    /*
     print('initDistancia state 2');
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {

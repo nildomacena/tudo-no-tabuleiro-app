@@ -8,6 +8,7 @@
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <application android:name="io.flutter.app.FlutterApplication" android:label="Tudo no Tabuleiro" android:icon="@mipmap/launcher_icon">
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyB8pu0UXs3XDxxcsc1-8Zv5PYwet5-Vm8Y" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="high_importance_channel" />
     <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
       <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme" />
       <!-- Specifies an Android theme to apply to this Activity as soon as

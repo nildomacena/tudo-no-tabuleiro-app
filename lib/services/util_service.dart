@@ -11,7 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tudo_no_tabuleiro_app/model/estabelecimento.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../pages/estabelecimento_page/estabelecimento_page.dart';
+import '../pages/home_page.dart';
+import 'database_service.dart';
+
 class UtilService {
+  String estabelecimentoId;
   File _image;
   bool jaExibiuToastLogin = false;
   int indexAuxImage; //Variável para incrementar a cada link temporário. Se usar o mesmo link, a imagem continua sempre a mesma
@@ -20,12 +25,14 @@ class UtilService {
   bool
       exibiuSnackLocalizacaoTemp; //Variável para não exibir vários snackbars se a localização for temporária
   LocationData locationData;
+  SharedPreferences sharedPreferences;
   UtilService() {
     Location.instance.onLocationChanged.listen((event) {});
+    initSharedPreferences();
   }
 
   initSharedPreferences() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences = await SharedPreferences.getInstance();
     if (sharedPreferences.getBool('nao_exibir_mensagem_localizacao') == null) {
       await sharedPreferences.setBool('nao_exibir_mensagem_localizacao', false);
     }
@@ -40,6 +47,37 @@ class UtilService {
     await sharedPreferences.setBool('nao_exibir_mensagem_localizacao', false);
     await sharedPreferences.setBool('localizacao_ja_exibida', false);
     return;
+  }
+
+  void redirectNotification() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('estabelecimentoId') != null &&
+        prefs.getString('estabelecimentoId') != '') {
+      try {
+        Estabelecimento estabelecimento = await databaseService
+            .getEstabelecimentoById(prefs.getString('estabelecimentoId'));
+        await prefs.setString('estabelecimentoId', '');
+        Get.to(EstabelecimentoPage(estabelecimento));
+      } catch (e) {
+        print('Erro: $e');
+        sharedPreferences.setString('estabelecimentoId', '');
+      }
+    } else {
+      print('entrou no else ${prefs.getString('tipo')}');
+      if (prefs.getString('tipo') != null &&
+          prefs.getString('tipo') != '' &&
+          prefs.getString('tipo').contains('sorteio')) {
+        await prefs.setString('tipo', '');
+        Get.to(HomePage(
+          selectedTab: 2,
+        ));
+      }
+    }
+  }
+
+  Future<void> resetEstabelecimentoId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.setString('estabelecimentoId', null);
   }
 
   Future<bool> initLocation() async {

@@ -38,6 +38,7 @@ class ListaEstabelecimentosPage extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class EstabelecimentoCard extends StatelessWidget {
   final Estabelecimento estabelecimento;
   EstabelecimentoCard(this.estabelecimento);
@@ -154,8 +155,9 @@ class EstabelecimentoCard extends StatelessWidget {
                       tag: estabelecimento.imagemUrl ??
                           databaseService.randomNumber.toString(),
                       child: CachedNetworkImage(
-                          placeholder: (context, url) =>
-                              CircularProgressIndicator(),
+                          placeholder: (context, url) => Container(
+                              padding: EdgeInsets.all(15),
+                              child: CircularProgressIndicator()),
                           imageUrl: estabelecimento.imagemUrl ??
                               'https://firebasestorage.googleapis.com/v0/b/tradegames-2dff6.appspot.com/o/no-image-amp.jpg?alt=media&token=85ccd97e-7a19-4649-9ddf-51c78f75b921',
                           fit: BoxFit.cover),

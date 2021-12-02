@@ -1,35 +1,79 @@
-import 'package:awesome_notifications/awesome_notifications.dart';
+//import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tudo_no_tabuleiro_app/controllers/bindings/auth_binding.dart';
-import 'package:tudo_no_tabuleiro_app/pages/estabelecimento_page/estabelecimento_page.dart';
-import 'package:tudo_no_tabuleiro_app/pages/gateway_notificacao/gateway_notificacao.dart';
 import 'package:tudo_no_tabuleiro_app/pages/home_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
+import 'services/database_service.dart';
+
+String estabelecimentoId;
+String tipoNotificacao;
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  estabelecimentoId = message.data['estabelecimentoId'] ?? '';
+  tipoNotificacao = message.data['tipo'] ?? '';
+  print('estabelecimentoID backgroundHandler: ${message.data}');
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  await sharedPreferences.setString(
+      'estabelecimentoId', message.data['estabelecimentoId'] ?? '');
+  await sharedPreferences.setString('tipo', message.data['tipo'] ?? '');
+
+  print(
+      "Handling a background message: ${message.messageId} setBool>>> ${sharedPreferences.getString('tipo')}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  /*  AwesomeNotifications().initialize('resource://drawable/app_icon', [
-    NotificationChannel(
-        channelKey: 'basic_channel',
-        channelName: 'Basic notifications',
-        channelDescription: 'Notification channel for basic tests',
-        defaultColor: Color(0xFF9D50DD),
-        ledColor: Colors.white)
-  ]);
-  AwesomeNotifications().actionStream.listen((receivedNotification) {
-    print('receivedNotification $receivedNotification');
-  });
-  AwesomeNotifications().displayedStream.listen((receivedNotification) {
-    print('receivedNotification displayed stream $receivedNotification');
-  }); */
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    'This channel is used for important notifications.', // description
+    importance: Importance.max,
+  );
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification notification = message.notification;
+    AndroidNotification android = message.notification?.android;
+    print('message.data> ${message.data}');
+    // If `onMessage` is triggered with a notification, construct our own
+    // local notification to show to users using the created channel.
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channel.description,
+              icon: android?.smallIcon,
+              // other properties...
+            ),
+          ));
+    }
+  });
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MyApp());
 }
 
@@ -40,6 +84,8 @@ class MyApp extends StatelessWidget {
   String estabelecimentoIdNotificacao;
   MyApp() {
     _firebaseMessaging.subscribeToTopic('sorteio');
+    _firebaseMessaging.subscribeToTopic('teste');
+    _firebaseMessaging.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
@@ -48,65 +94,6 @@ class MyApp extends StatelessWidget {
         print('Message also contained a notification: ${message.notification}');
       }
     });
-    /* _firebaseMessaging.configure(
-        //onBackgroundMessage: myBackgroundMessageHandler,
-        // ignore: missing_return
-        onLaunch: (data) {
-      print('onLaunch  $data');
-      if (data['data']['tipo'] == 'sorteio')
-        selectedTab = 2;
-      else if (data['data']['key'] != null)
-        estabelecimentoIdNotificacao = data['data']['key'];
-      // ignore: missing_return
-    }, onMessage: (data) {
-      print('onMessage $data');
-      if (data['data']['tipo'] == 'sorteio')
-        Get.dialog(AlertDialog(
-          title: Text(
-            'Tem sorteio novo na área!',
-          ),
-          content: Text(data['notification']['body']),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Get.offAll(HomePage(
-                    selectedTab: 2,
-                  ));
-                },
-                child: Text('IR PARA SORTEIOS')),
-            TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: Text('CANCELAR')),
-          ],
-        ));
-      else if (data['data']['tipo'] == 'estabelecimento') {
-        Get.dialog(AlertDialog(
-          title: Text(
-            data['notification']['title'],
-          ),
-          content: Text(data['notification']['body']),
-          actions: [
-            if (data['data']['key'] != null)
-              TextButton(
-                  onPressed: () {
-                    Get.to(EstabelecimentoPage(databaseService
-                        .estabelecimentoById(data['data']['key'])));
-                  },
-                  child: Text('CONFIRA')),
-            TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: Text('CANCELAR')),
-          ],
-        ));
-      }
-      // ignore: missing_return
-    }, onResume: (data) {
-      print('Resume $data');
-    }); */
   }
 
   static onBackGroundMessage() {
@@ -135,7 +122,6 @@ class MyApp extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               return HomePage(
                 selectedTab: selectedTab ?? 0,
-                estabelecimentoIdNotificacao: estabelecimentoIdNotificacao,
               );
             }
             return Container(
@@ -158,52 +144,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-/* 
-class FutureGetEstabelecimentos extends StatelessWidget {
-  int selectedTab;
-  String estabelecimentoIdNotificacao;
-  FutureGetEstabelecimentos(
-      {this.selectedTab, this.estabelecimentoIdNotificacao});
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: databaseService.carregarEstabelecimentos(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Ocorreu um erro durante a solicitação'),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.data) {
-            return HomePage(
-              selectedTab: selectedTab ?? 0,
-              estabelecimentoIdNotificacao: estabelecimentoIdNotificacao,
-            );
-          }
-          return Container(
-            color: Colors.green,
-            height: Get.height,
-            width: Get.width,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(
-                    child: Image.asset('assets/icon/splashscreen.png',
-                        fit: BoxFit.cover)),
-                Positioned(
-                  bottom: 240,
-                  left: Get.width * .45,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-}
- */

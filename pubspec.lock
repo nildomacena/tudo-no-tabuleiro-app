@@ -29,13 +29,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  awesome_notifications:
-    dependency: "direct main"
-    description:
-      name: awesome_notifications
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.5+7"
   boolean_selector:
     dependency: transitive
     description:
@@ -170,7 +163,7 @@ packages:
     source: hosted
     version: "1.0.0"
   firebase_core_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
@@ -191,7 +184,7 @@ packages:
     source: hosted
     version: "9.0.0"
   firebase_messaging_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_messaging_platform_interface
       url: "https://pub.dartlang.org"
@@ -265,6 +258,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0-nullsafety.1"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0-nullsafety.4"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -693,6 +700,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0-nullsafety.0"
   typed_data:
     dependency: transitive
     description:

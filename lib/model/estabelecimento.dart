@@ -129,10 +129,9 @@ class Estabelecimento {
       });
     }
     try {
-      if (data['endereco'].length > 15 &&
-          data['endereco'].indexOf('570') > 5) {
-        data['endereco'] = data['endereco']
-            .substring(0, data['endereco'].indexOf('570') - 2);
+      if (data['endereco'].length > 15 && data['endereco'].indexOf('570') > 5) {
+        data['endereco'] =
+            data['endereco'].substring(0, data['endereco'].indexOf('570') - 2);
       }
       if (data['endereco'].length > 15 &&
           data['endereco'].indexOf('Maceió - AL') > 5) {

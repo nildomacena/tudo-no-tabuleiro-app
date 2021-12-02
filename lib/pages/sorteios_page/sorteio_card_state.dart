@@ -49,7 +49,7 @@ class _SorteioCardState extends State<SorteioCard> {
       if (user == null) {
         return RaisedButton(
           child: Text(
-            'Faça login para concorrer ${user?.email}',
+            'Faça login para concorrer',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white),
           ),

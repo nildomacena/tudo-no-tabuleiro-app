@@ -10,6 +10,13 @@ import 'package:tudo_no_tabuleiro_app/pages/sorteios_page/sorteios_page.dart';
 import 'package:tudo_no_tabuleiro_app/services/database_service.dart';
 import 'package:tudo_no_tabuleiro_app/services/util_service.dart';
 
+import '../model/estabelecimento.dart';
+import '../services/database_service.dart';
+import '../services/util_service.dart';
+import '../services/util_service.dart';
+import '../services/util_service.dart';
+import '../services/util_service.dart';
+
 class HomePage extends StatefulWidget {
   bool itemAdicionado;
   int selectedTab;
@@ -34,27 +41,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    /**Codigo que verifica se chegou alguma notificacao com id de estabelecimento. Caso positivo, vai para a tela do estabelecimento */
     if (widget.selectedTab != null && widget.selectedTab != 0) {
       print('widget.selectedTab != null');
       setState(() {
         selectedIndex = widget.selectedTab;
       });
+      return;
     }
-    if (widget.itemAdicionado != null && widget.itemAdicionado) {
-      Future.delayed(Duration(milliseconds: 500)).then((value) => Get.snackbar(
-          'Item Adicionado ao carrinho',
-          'Confira o cardápio pra completar seu pedido',
-          backgroundColor: Colors.black,
-          colorText: Colors.white,
-          mainButton: TextButton(
-              onPressed: () {},
-              child: Text(
-                'CARRINHO',
-                style: TextStyle(color: Colors.purpleAccent),
-              )),
-          snackPosition: SnackPosition.BOTTOM,
-          margin: EdgeInsets.only(bottom: 30, left: 10, right: 10)));
-    }
+    /*print('util service.estabelecimentoId: ${utilService.estabelecimentoId}');
+     if (utilService.estabelecimentoId != null) {
+      databaseService
+          .getEstabelecimentoById(utilService.estabelecimentoId)
+          .then((value) {
+        utilService.estabelecimentoId = null;
+        Get.to(EstabelecimentoPage(value));
+      });
+    } else if (utilService.getEstabelecimentoId() != null) {
+      databaseService
+          .getEstabelecimentoById(utilService.estabelecimentoId)
+          .then((value) {
+        utilService.estabelecimentoId = null;
+        Get.to(EstabelecimentoPage(value));
+      });
+    } else */
+
     if (widget.estabelecimentoIdNotificacao != null &&
         widget.estabelecimentoIdNotificacao != '') {
       print(
@@ -69,6 +80,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    utilService.redirectNotification();
+
     return Scaffold(
       body: WillPopScope(
         onWillPop: () {
